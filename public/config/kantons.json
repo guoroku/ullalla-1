@@ -1,0 +1,118 @@
+{
+  "1": {
+    "label": "Waadt",
+    "value": "1"
+  },
+  "2": {
+    "label": "Genf",
+    "value": "2"
+  },
+  "3": {
+    "label": "Freiburg",
+    "value": "3"
+  },
+  "4": {
+    "label": "Bern",
+    "value": "4"
+  },
+  "5": {
+    "label": "Wallis",
+    "value": "5"
+  },
+  "6": {
+    "label": "Neuenburg",
+    "value": "6"
+  },
+  "7": {
+    "label": "Jura",
+    "value": "7"
+  },
+  "8": {
+    "label": "Solothurn",
+    "value": "8"
+  },
+  "9": {
+    "label": "Basel-Landschaft",
+    "value": "9"
+  },
+  "10": {
+    "label": "Basel-Stadt",
+    "value": "10"
+  },
+  "11": {
+    "label": "Aargau",
+    "value": "11"
+  },
+  "12": {
+    "label": "Luzern",
+    "value": "12"
+  },
+  "13": {
+    "label": "Obwalden",
+    "value": "13"
+  },
+  "14": {
+    "label": "Nidwalden",
+    "value": "14"
+  },
+  "15": {
+    "label": "Zug",
+    "value": "15"
+  },
+  "16": {
+    "label": "Uri",
+    "value": "16"
+  },
+  "17": {
+    "label": "Schwyz",
+    "value": "17"
+  },
+  "18": {
+    "label": "Tessin",
+    "value": "18"
+  },
+  "19": {
+    "label": "Graubünden",
+    "value": "19"
+  },
+  "20": {
+    "label": "IT",
+    "value": "20"
+  },
+  "21": {
+    "label": "St. Gallen",
+    "value": "21"
+  },
+  "22": {
+    "label": "Zürich",
+    "value": "22"
+  },
+  "23": {
+    "label": "Schaffhausen",
+    "value": "23"
+  },
+  "24": {
+    "label": "Büsingen",
+    "value": "24"
+  },
+  "25": {
+    "label": "Thurgau",
+    "value": "25"
+  },
+  "26": {
+    "label": "Glarus",
+    "value": "26"
+  },
+  "27": {
+    "label": "Appenzell Ausserrhoden",
+    "value": "27"
+  },
+  "28": {
+    "label": "Appenzell Innerrhoden",
+    "value": "28"
+  },
+  "29": {
+    "label": "Fürstentum Liechtenstein",
+    "value": "29"
+  }
+}
