@@ -21,16 +21,19 @@ class CreateUsersTable extends Migration
             $table->integer('user_type_id')->unsigned();
             $table->boolean('activated')->default(false);
             $table->boolean('approved')->default(false);
+            $table->boolean('is_active_d_package')->default(false);
+            $table->boolean('is_active_gotm_package')->default(false);
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('nickname')->nullable();
             $table->integer('country_id')->unsigned()->nullable();
-            $table->string('date_of_birth')->nullable();
+            $table->string('age')->nullable();
             $table->string('height')->nullable();
             $table->string('weight')->nullable();
             $table->string('sex')->nullable();
             $table->string('sex_orientation')->nullable();
-            $table->string('ancestry')->nullable();
+            $table->string('type')->nullable();
+            $table->string('figure')->nullable();
             $table->string('breast_size')->nullable();
             $table->string('eye_color')->nullable();
             $table->string('hair_color')->nullable();
@@ -42,6 +45,7 @@ class CreateUsersTable extends Migration
             $table->string('alcohol')->nullable();
             $table->string('about_me')->nullable();
             $table->string('photos')->nullable();
+            $table->string('videos')->nullable();
             $table->string('phone')->nullable();
             $table->string('mobile')->nullable();
             $table->integer('canton_id')->unsigned()->nullable();
@@ -50,9 +54,12 @@ class CreateUsersTable extends Migration
             $table->string('address')->nullable();
             $table->string('working_time')->nullable();
             $table->integer('package1_id')->unsigned()->nullable();
-            $table->integer('package2_id')->unsigned()->nullable();
             $table->timestamp('package1_activation_date')->nullable();
+            $table->timestamp('package1_expiry_date')->nullable();
+            $table->integer('package2_id')->unsigned()->nullable();            
             $table->timestamp('package2_activation_date')->nullable();
+            $table->timestamp('package2_expiry_date')->nullable();
+            $table->string('stripe_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

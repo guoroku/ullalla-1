@@ -39,7 +39,7 @@ $(document).ready(function() {
             },
             onFinished: function(e, currentIndex) {
                 // Uncomment the following line to submit the form using the defaultSubmit() method
-                $('#profileForm').find('.actions li').attr('aria-disabled', true);                
+                $('#profileForm').find('.actions li').attr('aria-disabled', true);      
                 $('#profileForm').formValidation('defaultSubmit');
 
                 // For testing purpose
@@ -88,17 +88,18 @@ $(document).ready(function() {
                 //         }
                 //     }
                 // },
-                // date_of_birth: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'Birthday is required'
-                //         },
-                //         date: {
-                //             format: 'DD-MM-YYYY',
-                //             message: 'Birthday is not valid'
-                //         }
-                //     }
-                // },
+                age: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Birthday is required'
+                        },
+                        between: {
+                            min: 18,
+                            max: 60,
+                            message: 'You must be at least 18 years old'
+                        }
+                    }
+                },
                 // about_me: {
                 //     validators: {
                 //         stringLength: {

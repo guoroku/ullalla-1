@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,6 +27,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $dates = ['package1_expiry_date', 'package2_expiry_date'];
 
     public function user_activation()
     {
@@ -56,4 +59,84 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Price');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role', 'user_role');
+    }
+
+    public function hasRole($role)
+    {
+        if ($this->roles()->where('role_name', $role)->first()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasAnyRole($roles)
+    {
+        if (is_array($roles)) {
+            foreach ($roles as $role) {
+                if ($this->hasRole($role)) {
+                    return true;
+                }
+            }
+        } else {
+            if ($this->hasRole($roles)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function assignRoles($roles)
+    {
+        if (is_array($roles)) {
+            $rolesToBeAssign = Role::whereIn('role_name', $roles)->get()->toArray();
+            $roleIds = [];
+            $roleIds = array_column($rolesToBeAssign, 'id');
+            $this->roles()->sync($roleIds);
+        } else {
+            $roleToBeAsign = Role::where('role_name', $roles)->first();
+            $this->roles()->attach($roleToBeAsign);
+        }
+    }
+
+    public function isAdmin()
+    {
+        return $this->hasRole('admin') ? true : false;
+    }
+
+    public static function scopeApproved($query)
+    {
+        $query->where('approved', '1');
+    }
+
+    public static function scopePayed($query)
+    {
+        $query->where('is_active_d_package', '1');
+    }
+
+    public static function scopeNickname($query, $nickname)
+    {
+        $query->where('nickname', $nickname);
+    }
+
+    public function hasContact()
+    {
+        return ($this->address || $this->phone || $this->city || $this->mobile) ? true : false;
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany('App\Models\Notification', 'notifiable');
+    }
+
+    public function getPackageExpireAttribute($date)
+    {
+        return Carbon::parse($date);
+    }
+
 }

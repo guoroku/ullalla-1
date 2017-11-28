@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         'cantons',
         'packages',
         'users',
+        'roles',
 	];
 
     /**
@@ -31,5 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CountriesSeeder::class);
         $this->call(UserTypeTableSeeder::class);
         $this->call(UserTableSeeder::class);
+        $this->call(RoleTableSeeder::class);
     }
 }

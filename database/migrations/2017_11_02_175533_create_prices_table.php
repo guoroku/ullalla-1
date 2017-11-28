@@ -16,9 +16,10 @@ class CreatePricesTable extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->string('price_type')->nullable();
             $table->string('service_duration')->nullable();
             $table->string('service_price')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

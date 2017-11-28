@@ -10,6 +10,7 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
+        "pbmedia/laravel-ffmpeg": "^1.1",
         "pedzed/laravel-uploadcare": "^0.2.0",
         "stripe/stripe-php": "^5.6",
         "webpatser/laravel-countries": "dev-master"
@@ -28,7 +29,13 @@
         ],
         "psr-4": {
             "App\\": "app/"
-        }
+        },
+        "psr-0": {
+            "Acme": " app/"
+        },
+        "files": [
+            "app/Helpers/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -6,13 +6,17 @@ use DB;
 use Auth;
 use Mail;
 use Session;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserType;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Mail\ActivationMail;
+use App\Events\PackageExpired;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Requests\SignInRequest;
 use App\Http\Controllers\Controller;
+use App\Events\MonthOfTheGirlPackageExpired;
 
 class AuthController extends Controller
 {
@@ -68,8 +72,42 @@ class AuthController extends Controller
 				return redirect()->back()->with('error', 'Please activate your account');
 			}
 
+			if ($user->isAdmin()) {
+				return redirect()->action('AdminController@getInactiveUsers');
+			}
+
             // user can sign in
 			if ($user->approved == '1') {
+
+				// get expiry date days before expiration
+				$expiryDateDefaultPackage = getPackageExpiryDate(getDaysForExpiry($user->package1_id));
+				$expiryDateGirlOfTheMonthPackage = getPackageExpiryDate(getDaysForExpiry($user->package2_id));
+				// get expiry dates from db
+				$package1ExpiryDate = Carbon::parse($user->package1_expiry_date)->format('Y-m-d');
+				$package2ExpiryDate = Carbon::parse($user->package2_expiry_date)->format('Y-m-d');
+
+				// deactivate packages if it they are expired
+				if (Carbon::now() >= $package2ExpiryDate) {
+					$user->is_active_gotm_package = 0;
+					$user->save();
+				}
+				if (Carbon::now() >= $package1ExpiryDate) {
+					$user->is_active_d_package = 0;
+					$user->save();
+				}
+
+				// package expiry notifications
+				if ($package1ExpiryDate < $expiryDateDefaultPackage) {
+					event(new PackageExpired($user));
+					Session::flash('defaultGirlPackageExpired', 'Default package expired');					
+				}
+				if ($package2ExpiryDate < $expiryDateGirlOfTheMonthPackage) {
+					event(new MonthOfTheGirlPackageExpired($user));
+					Session::flash('gotmPackageExpired', 'Girl of the month package expired');
+				}
+
+				// $diff=date_diff(Carbon::now(), date_create($user->package1_expiry_date));
+				// dd($diff->days);
 				return redirect('/');
 			} else {
 				return redirect()->action('ProfileController@getCreate', ['username' => $user->username]);

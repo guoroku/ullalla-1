@@ -13,13 +13,16 @@
                             <nav>
                                 <ul style="text-align: center;">
                                     <li><a href="/">Home</a></li>
-                                    <li><a href="{{ url('local') }}">Lokale</a></li>
-                                    <li><a href="{{ url('profile') }}">Private</a></li>
+                                    <li><a href="{{ url('local') }}">Locals</a></li>
+                                    <li><a href="{{ url('girls') }}">Girls</a></li>
                                     <li><a href="{{ url('faq') }}">FAQ</a></li>
                                     @if(!Auth::check())
                                     <li><a href="{{ url('signin') }}">Sign In</a></li>
                                     <li><a href="{{ url('signup') }}">Sign Up</a></li>
                                     @else
+                                    @if(Auth::user()->approved == '1')
+                                    <li><a href="{{ url('@' . Auth::user()->username . '/bio') }}">Profile</a></li>
+                                    @endif                                    
                                     <li><a href="{{ url('signout') }}">Sign Out</a></li>
                                     @endif
                                     <li class="dropdown">
@@ -46,11 +49,11 @@
                             <div class="mobile-menu">
                                 <nav id="dropdown">
                                     <ul>
-                                        <li><a href="/{{-- {{tran()}} --}}">Home</a></li>
-                                        <li><a href="/{{-- {{tran()}} --}}/local/">Lokale</a></li>
-                                        <li><a href="/{{-- {{tran()}} --}}/profile/">{{-- {{ tran('Private') }} --}}</a></li>
-                                        <li><a href="/{{-- {{tran()}} --}}/faq/">FAQ</a></li>
-                                        <li><a href="/{{-- {{tran()}} --}}">Login</a></li>
+                                        <li><a href="">Home</a></li>
+                                        <li><a href="/local/">Lokale</a></li>
+                                        <li><a href="/profile/">Private</a></li>
+                                        <li><a href="/faq/">FAQ</a></li>
+                                        <li><a href="">Login</a></li>
                                         <li class="dropdown">
                                             <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="flag-icon flag-icon-{{-- {{ tran() }} --}}"></span>
                                                 <span class="caret"></span></a>

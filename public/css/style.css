@@ -1370,3 +1370,16 @@ border-radius: 0;
 
 /***** end upload care *****/
 
+/***** Datepicker ******/
+.ui-datepicker-month,
+.ui-datepicker-year {
+  color: black;
+  background-color: white;
+}
+
+
+table.info-table td,
+table.services-table td {
+  padding: 10px;
+}
+

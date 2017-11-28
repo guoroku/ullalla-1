@@ -18,6 +18,7 @@
 /********** Create Profile Modal ***********/
 .section-create-profile .modal.in .modal-dialog {
   margin-top: 150px !important;
+  width: 800px;
   overflow-y: initial !important;
 }
 
@@ -55,8 +56,6 @@
 }
 
 /****** Radio and checkbox input fields ******/
-
-
 @keyframes click-wave {
   0% {
     height: 40px;
@@ -130,7 +129,75 @@
   margin-bottom: 15px;
 }
 
+/***** Upload Care preview image ******/
+.image-preview-multiple ._list {
+  padding-top: 20px;
+}
+.image-preview-multiple ._item {
+  padding: 0 0 10px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  width: 185px;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: normal;
+}
+.image-preview-multiple ._item img {
+  display: block;
+  width: 150px;
+  height: 150px;
+  padding: 0 10px 6px;
+}
 
+/****** Working Time  *******/
+table.working-times-table label .control__indicator,
+#available_24_7 label .control__indicator {
+  background-color: #ccc;
+}
 
+table.working-times-table td:not(:first-child), 
+table.working-times-table th:not(:first-child) {
+  text-align: center;
+}
 
+table.working-times-table td {
+  vertical-align: middle !important;
+}
+
+table.working-times-table .form-control {
+  width: auto;
+  display: inline-block;
+}
+
+table.working-times-table .form-control + span {
+  margin-right: 10px;
+}
+
+table.working-times-table .control--checkbox {
+  margin-bottom: 4px !important;
+}
+
+table.working-times-table .control--checkbox a,
+#available_24_7 .control--checkbox a {
+  display: block;
+  margin-top: 4px;
+}
+
+#available_24_7 {
+  margin-left: 7px; 
+  margin-bottom: 10px;
+}
+
+#available_24_7 .control input:checked ~ .control__indicator {
+  background: #f26522 !important;
+}
+
+.working-times-disabled * {
+  color: #ccc !important;
+}
+
+.working-times-disabled .control input:checked ~ .control__indicator {
+  background: #ccc !important;
+}
 
