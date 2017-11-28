@@ -85,3 +85,93 @@
     </div>
 </div>
 @stop
+
+@section('perPageScripts')
+<script>
+    $(function () {
+    // add new price
+    $('button.add-new-price').on('click', function (e) {
+        e.preventDefault();
+        var serviceDuration = $('input[name="service_duration"]').val();
+        var servicePrice = $('input[name="service_price"]').val();
+        var priceType = $('select[name="price_type"]').val();
+        var token = $(this).siblings('input').val();
+        $.ajax({
+            url: location.protocol + '//' + location.host + '/ajax/add_new_price',
+            type: 'post',
+            data: {service_duration: serviceDuration, service_price: servicePrice, price_type: priceType, _token: token},
+            success: function (data) {
+                var priceSection = $('.price_section');
+                var errors = data.errors;
+                if ($.isEmptyObject(errors)) {
+                // remove error messages if there are any and remove the has-error class
+                var input = priceSection.find('input:visible');
+                input.next().text('');
+                input.val('');
+                input.closest('.form-group').removeClass('has-error');
+                // find table and table body
+                var table = $('.price-table-container').find('table');
+                var tBody = table.find('tbody#prices_body');
+                // add row
+                var row = $('<tr></tr>');
+                // add tds to newly created row
+                var td = $('<td></td>', {
+                    text: data.priceType
+                });
+                var td1 = $('<td></td>', {
+                    text: data.serviceDuration
+                });
+                var td2 = $('<td></td>', {
+                    text: data.servicePrice
+                });
+                var td3 = $('<td></td>');
+                var glyphiconSpan = $('<span></span>', {
+                    class: 'glyphicon glyphicon-trash'
+                });
+                var deleteButton = $('<a></a>', {
+                    href: location.protocol + '//' + location.host + '/ajax/delete_price/' + data.newPriceID,
+                    class: 'text-danger delete-price'
+                }).on('click', function() {
+                    return confirm('Are You Sure?');
+                }).append(glyphiconSpan).appendTo(td3);
+
+                row.append(td, td1, td2, td3).appendTo(tBody);
+
+                if (table.hasClass('is-hidden')) {
+                    table.removeClass('is-hidden').addClass('is-active-table');
+                }
+            } else {
+                // print the errors
+                $.each(errors, function (key, val) {
+                    var input = priceSection.find('[name="'+ key +'"]');
+                    input.closest('div.form-group').addClass('has-error');
+                    input.next().text(val);
+                });
+            }
+        }
+    });
+    });
+});
+// delete price
+$(function () {
+    $(".price-table-container").on("click", "a.delete-price", function(e) {
+        e.preventDefault();
+        var that = $(this);
+        var url = that.attr('href');
+        var priceID = url.split('/').pop();
+        $.ajax({
+            url: url,
+            type: 'get',
+            data: {price_id: priceID},
+            success: function (data) {
+                var tBody = that.closest('tbody');
+                that.closest('tr').remove();
+                if (tBody.children().length == 0) {
+                    tBody.parent('table').removeClass('is-active-table').addClass('is-hidden');
+                }
+            }
+        });
+    });
+});
+</script>
+@stop

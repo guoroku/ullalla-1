@@ -48,6 +48,8 @@ class CreateUsersTable extends Migration
             $table->string('videos')->nullable();
             $table->string('phone')->nullable();
             $table->string('mobile')->nullable();
+            $table->string('website')->nullable();
+            $table->string('club_name')->nullable();
             $table->integer('canton_id')->unsigned()->nullable();
             $table->string('city')->nullable();
             $table->string('zip_code')->nullable();

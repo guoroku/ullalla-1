@@ -16,7 +16,7 @@ class CheckIfApproved
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::user()->approved == '1') {
+        if (Auth::user()->approved != '1') {
             return redirect()->action('HomeController@getIndex');
         }
 

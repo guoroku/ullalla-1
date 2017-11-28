@@ -42,7 +42,6 @@ Route::get('@{username}/job_offers', 'ProfileController@getJobOffers');
 Route::put('@{username}/job_offers/store', 'ProfileController@postJobOffers');
 
 Route::get('@{username}/prices', 'ProfileController@getPrices');
-Route::put('@{username}/prices/store', 'ProfileController@postPrices');
 
 Route::get('@{username}/packages', 'ProfileController@getPackages');
 Route::put('@{username}/packages/store', 'ProfileController@postPackages');

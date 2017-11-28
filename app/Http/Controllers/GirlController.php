@@ -23,7 +23,6 @@ class GirlController extends Controller
 			$inputServices = $request->services;	
 			$users = $users->leftJoin('user_service', 'users.id', '=', 'user_service.user_id')
 			->whereIn('user_service.service_id', $request->services)
-			->select('users.*')
 			->groupBy('users.username');
 		}
 
@@ -52,9 +51,15 @@ class GirlController extends Controller
 		$orderBy = $request->order_by ? $request->order_by : null;
 		$show = $request->show ? $request->show : null;
 
-		$users = $users->where('users.approved', '=', '1')->where('users.is_active_d_package', '=', '1');
+			// ->groupBy('users.username');
+		$users = $users->where('users.approved', '=', '1')
+			->where('users.is_active_d_package', '=', '1')
+			->select('users.*')
+			->groupBy('users.username');
 		$users = isset($orderBy) ? $users->orderBy(getBeforeLastChar($orderBy, '_'), getAfterLastChar($orderBy, '_')) : $users;
 		$users = isset($show) ? $users->paginate($show) : $users->paginate(9);
+
+		// dd($users);
 
 		$request->flash();
 

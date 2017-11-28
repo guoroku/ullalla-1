@@ -23,9 +23,8 @@ class ProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('approved', ['only' => ['postCreate', 'getCreate']]);
-        $this->middleware('package.expiry', ['except' => ['getPackages', 'postPackages']]);
-        $this->middleware('approved', ['except' => ['getCreate', 'postCreate', 'postNewPrice', 'deletePrice']]);
+        $this->middleware('approved', ['except' => ['postCreate', 'getCreate', 'postNewPrice', 'deletePrice']]);
+        $this->middleware('package.expiry', ['except' => ['getPackages', 'postPackages', 'getCreate', 'postCreate', 'postNewPrice', 'deletePrice']]);
     }
 
     public function getCreate()
@@ -310,18 +309,6 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         return view('pages.profile.prices', compact('user'));
-    }
-
-    public function postPrices()
-    {
-        $user = Auth::user();
-        $user->canton_id = request('canton');
-        $user->city = request('city');
-        $user->address = request('address');
-        $user->zip_code = request('zip_code');
-        $user->save();
-
-        return redirect()->back()->with('success', 'Prices successfully updated.');
     }
 
     public function getPackages()

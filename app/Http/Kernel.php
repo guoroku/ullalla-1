@@ -60,6 +60,5 @@ class Kernel extends HttpKernel
         'roles' => \App\Http\Middleware\CheckRole::class,
         'approved' => \App\Http\Middleware\CheckIfApproved::class,
         'package.expiry' => \App\Http\Middleware\RedirectIfPackageExpired::class,
-        'approved' => \App\Http\Middleware\RedirectIfNotApproved::class,
     ];
 }
