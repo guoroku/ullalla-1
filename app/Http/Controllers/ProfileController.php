@@ -43,7 +43,7 @@ class ProfileController extends Controller
     {
         $defaultPackage = '';
         $monthGirlPackage = '';
-        $workingTime = getWorkingTime($request->days, $request->available_24_7, $request->time_from, $request->time_from_m, $request->time_to, $request->time_to_m);
+        $workingTime = getWorkingTime($request->days, $request->available_24_7, $request->time_from, $request->time_from_m, $request->time_to, $request->time_to_m, $request->available_24_7_night_escort, $request->night_escorts);
 
         // get pacakges by id with previously defined session
         if (Session::has('default_package')) {
@@ -296,7 +296,7 @@ class ProfileController extends Controller
     public function postWorkingTimes(Request $request)
     {
         $user = Auth::user();
-        $workingTime = getWorkingTime($request->days, $request->available_24_7, $request->time_from, $request->time_from_m, $request->time_to, $request->time_to_m);
+        $workingTime = getWorkingTime($request->days, $request->available_24_7, $request->time_from, $request->time_from_m, $request->time_to, $request->time_to_m, $request->available_24_7_night_escort, $request->night_escorts);
 
         $user->working_time = $workingTime;
         $user->save();

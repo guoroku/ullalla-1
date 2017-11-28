@@ -27,7 +27,11 @@
 					<div class="form-group">
 						<div id="available_24_7">
 							<label class="control control--checkbox"><a>Available 24/7</a>
-								<input type="checkbox" name="available_24_7" {{ $workingTime == 'Available 24/7' ? 'checked' : '' }}>
+								<input type="checkbox" name="available_24_7" {{ stringHasString('Available 24/7', $workingTime) ? 'checked' : '' }}>
+								<div class="control__indicator"></div>
+							</label>
+							<label class="control control--checkbox {{ !stringHasString('Available 24/7', $workingTime) ? 'working-times-disabled' : '' }}" style="margin-left: 20px;"><a>Show As Night Escort</a>
+								<input type="checkbox" name="available_24_7_night_escort" value="1" {{ !stringHasString('Available 24/7', $workingTime) ? 'disabled' : '' }} {{ stringHasString('&', $workingTime) ? 'checked' : '' }}>
 								<div class="control__indicator"></div>
 							</label>
 						</div>
@@ -42,6 +46,7 @@
 									</th>
 									<th>From</th>
 									<th>To</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -82,6 +87,12 @@
 										</select>
 										<span>min</span>
 									</td>
+									<td>
+										<label class="control control--checkbox"><a>Night Escort</a>
+											<input type="checkbox" name="night_escorts[{{ $counter }}]" value="{{ $counter }}" {{ ($dbDayOfTheWeek == $dayOfTheWeek) && (explode('|', arrayHasString($workingTime, $dbDayOfTheWeek))) ? '' : 'disabled' }} {{ ($dbDayOfTheWeek == $dayOfTheWeek) && stringHasString('&', explode('|', arrayHasString($workingTime, $dbDayOfTheWeek))[1]) ? 'checked' : '' }}>
+											<div class="control__indicator"></div>
+										</label>
+									</td>
 								</tr>
 								<?php $counter++; ?>
 								@endforeach
@@ -103,15 +114,16 @@
 		var workingTimesRows = $('table.working-times-table').find('tr');
 		var workingTimesBodyRows = $('table.working-times-table tbody').find('tr');
 
-		$('.working-times-table tr input').on('click', function () {
+		$('.working-times-table tr td:first-child input').on('click', function () {
 			var that = $(this);
 			var closestTr = that.closest('tr');
 			if (closestTr.hasClass('working-times-disabled')) {
 				closestTr.removeClass('working-times-disabled');
-				closestTr.find('select').attr('disabled', false);
+				closestTr.find('select, input').attr('disabled', false);
 			} else {
 				closestTr.addClass('working-times-disabled');
-				closestTr.find('select').attr('disabled', true);
+				closestTr.find('select, td:last-child input').attr('disabled', true);
+				closestTr.find('input').prop('checked', false);
 			}
 		});
 
@@ -121,13 +133,23 @@
 			}
 		});
 
-		$('#available_24_7 input').on('click', function () {
+		$('#available_24_7 label:first-child input').on('click', function () {
 			var that = $(this);
 			if (that.prop('checked')) {
-				that.attr('disabled', false).closest('tr').removeClass('working-times-disabled');
+				that.closest('label')
+				.next('label')
+				.removeClass('working-times-disabled')
+				.find('input')
+				.attr('disabled', false);
 				$('table.working-times-table').addClass('working-times-disabled').find('select, input').attr('disabled', true);
 			} else {
-				that.attr('disabled', false).closest('tr').addClass('working-times-disabled');
+				that.closest('label')
+				.next('label')
+				.addClass('working-times-disabled')
+				.find('input')
+				.attr('disabled', true)
+				.prop('checked', false);
+
 				selectAllDays.attr('disabled', false);
 				$('table.working-times-table').removeClass('working-times-disabled');		
 				$('table.working-times-table').find('input').attr('disabled', false);
@@ -146,7 +168,7 @@
 				that.closest('table').removeClass('working-times-disabled').find('tr').removeClass('working-times-disabled');
 				that.closest('table').find('select, input').attr('disabled', false).prop('checked', true);
 			} else {
-				$('#available_24_7').removeClass('working-times-disabled').find('input').attr('disabled', false);
+				$('#available_24_7').removeClass('working-times-disabled').find('label:first-child input').attr('disabled', false);
 				that.attr('disabled', false).closest('tr').removeClass('working-times-disabled');
 				workingTimesBodyRows.addClass('working-times-disabled').find('select').attr('disabled', true).prop('checked', false);
 				workingTimesBodyRows.find('input').attr('disabled', false).prop('checked', false);

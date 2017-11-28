@@ -91,17 +91,25 @@ function getDaysOfTheWeek() {
 	return ['Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 }
 
-function getWorkingTime($days, $available_24_7, $timeFrom, $timeFromM, $timeTo, $timeToM) {
+function getWorkingTime($days, $available_24_7, $timeFrom, $timeFromM, $timeTo, $timeToM, $showAsNightEscort, $nightEscorts) {
 	$workingTime = null;
     // girl availability and working hours
 	if ($available_24_7) {
 		$workingTime = 'Available 24/7';
+		if ($showAsNightEscort) {
+			$workingTime .= '&' . 'Night Escort';
+		}
 	} elseif ($days) {
         // loop through each day and put in array day of the week delimited (|) with time from and time to            
 		foreach ($days as $key => $value) {
 			if ($value) {
-				$workingTime[] = $value . '|' . $timeFrom[$key] . ':' . $timeFromM[$key] . ' - ' . 
-				$timeTo[$key] . ':' . $timeToM[$key];
+				$string = $value . '|' . $timeFrom[$key] . ':' . $timeFromM[$key] . ' - ' . $timeTo[$key] . ':' . $timeToM[$key];
+				if (isset($nightEscorts[$key])) {
+					$string .= '&' . $nightEscorts[$key];
+					$workingTime[] = $string;
+				} else {
+					$workingTime[] = $string;
+				}
 			}
 		}
 	}
@@ -253,6 +261,16 @@ function arrayHasString($array, $string) {
 		}
 	}
 	return $values;
+}
+
+function stringHasString($needle, $haystack) {
+	if (!is_array($haystack)) {
+		if (stripos($haystack, $needle) !== false) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function isJson($string) {
