@@ -100,6 +100,7 @@ $(document).ready(function() {
                         }
                     }
                 },
+
                 // about_me: {
                 //     validators: {
                 //         stringLength: {
@@ -121,8 +122,22 @@ $(document).ready(function() {
                 //             message: 'This field must be numeric'
                 //         }
                 //     }
-                // }
-                ullalla_package: {
+                // },
+                // skype_name: {
+                //     validators: {
+                //         notEmpty: {
+                //             message: 'This field is required'
+                //         }
+                //     }
+                // },
+                // website: {
+                //     validators: {
+                //         uri: {
+                //             message: 'The URL is not valid'
+                //         }
+                //     }
+                // },
+                'ullalla_package[]': {
                     err: '#alertPackageMessage',
                     validators: {
                         notEmpty: {

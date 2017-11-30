@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Country');
     }
 
+    public function spoken_languages()
+    {
+        return $this->belongsToMany('App\Models\SpokenLanguage', 'user_spoken_language')->withPivot('language_level');
+    }
+
     public function canton()
     {
         return $this->belongsTo('App\Models\Canton');
@@ -63,6 +68,16 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany('App\Models\Role', 'user_role');
+    }
+
+    public function contact_options()
+    {
+        return $this->belongsToMany('App\Models\ContactOption', 'user_contact_option');
+    }
+
+    public function service_options()
+    {
+        return $this->belongsToMany('App\Models\ServiceOption', 'user_service_options');
     }
 
     public function hasRole($role)

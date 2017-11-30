@@ -46,6 +46,9 @@ Route::get('@{username}/prices', 'ProfileController@getPrices');
 Route::get('@{username}/packages', 'ProfileController@getPackages');
 Route::put('@{username}/packages/store', 'ProfileController@postPackages');
 
+Route::get('@{username}/languages', 'ProfileController@getLanguages');
+Route::put('@{username}/languages/store', 'ProfileController@postLanguages');
+
 Route::get('@{username}/banners', 'ProfileController@getBanners');
 Route::put('@{username}/banners/store', 'ProfileController@postBanners');
 

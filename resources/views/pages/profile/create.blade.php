@@ -86,13 +86,9 @@
 							<div class="form-group">
 								<label class="control-label">Age*</label>
 								<select name="age" id="age" class="form-control">
-									<?php 
-									for ($age=18; $age <= 60 ; $age++)  {
-										?>
+									@for ($age=18; $age <= 60 ; $age++) 
 										<option value="{{ $age }}">{{ $age }}</option>
-										<?php
-									}
-									?>
+									@endfor
 								</select>
 							</div>
 							<div class="form-group">
@@ -206,24 +202,69 @@
 					</section>
 					<h2>Contact</h2>
 					<section data-step="2">
-						<div class="col-xs-12">
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="control-label">Email*</label>
 								<input type="text" class="form-control" name="email" value="{{ $user->email }}" />
 							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control-label">Website URL</label>
+								<input type="text" class="form-control" name="website"/>
+							</div>
+						</div>
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="control-label">Telephone</label>
 								<input type="text" class="form-control" name="phone"/>
 							</div>
+						</div>
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="control-label">Mobile Phone</label>
 								<input type="text" class="form-control" name="mobile"/>
 							</div>
 						</div>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control-label" style="display: block; text-align: left;">Available Apps</label>
+								@foreach($contactOptions as $contactOption)
+								<label class="control control--checkbox" style="margin-right: 20px;"><a>{{ ucfirst($contactOption->contact_option_name) }}</a>
+									<input type="checkbox" name="contact_options[]" value="{{ $contactOption->id }}" id="{{ $contactOption->contact_option_name == 'skype' ? 'skype_contact' : '' }}">
+									<div class="control__indicator"></div>
+								</label>
+								@endforeach
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control-label" style="display: block; text-align: left;">I Prefer</label>
+								@foreach(getPreferedOptions() as $key => $preferedOption)
+								<div class="col-xs-6" style="padding: 0px; margin: 0px;">
+									<label style="margin-right: 20px;">
+										<input type="radio" name="prefered_contact_option" value="{{ $key }}" style="display: inline-block;">
+										{{ $preferedOption }}
+									</label>
+								</div>	
+								@endforeach
+								<div class="col-xs-6" style="padding: 0px; margin: 0px;">
+									<label class="control control--checkbox" style="margin-right: 20px;">
+										<input type="checkbox" name="no_withheld_numbers" value="1" style="display: inline-block;"><a>No Withheld Numbers</a>
+										<div class="control__indicator"></div>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-6 skype-name" style="display: none;">
+							<div class="form-group">
+								<input type="text" name="skype_name" placeholder="Skype Name" class="form-control">
+							</div>
+						</div>
 					</section>
 					<h2>Workplace</h2>
 					<section data-step="3">
-						<div class="col-xs-12">
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="control-label">Canton</label>
 								<select name="canton" class="form-control">
@@ -233,17 +274,64 @@
 									@endforeach
 								</select>
 							</div>
+						</div>
+						<div class="col-xs-4">
 							<div class="form-group">
 								<label class="control-label">City</label>
 								<input type="text" class="form-control" name="city"/>
 							</div>
+						</div>
+						<div class="col-xs-2">
 							<div class="form-group">
 								<label class="control-label">Zip Code</label>
 								<input type="text" class="form-control" name="zip_code"/>
 							</div>
+						</div>
+						<div class="col-xs-6">
 							<div class="form-group">
 								<label class="control-label">Address</label>
 								<input type="text" class="form-control" name="address"/>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control-label">Club Name</label>
+								<input type="text" class="form-control" name="club_name"/>
+							</div>
+						</div>
+						<h3>Available For:</h3>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control control--checkbox">
+									<input type="checkbox" name="incall" value="1" id="incall_availability"><a>Incall</a>
+									<div class="control__indicator"></div>
+								</label>
+								<div class="incall-options" style="display: none;">
+									@foreach(getIncallOptions() as $key => $incallOption)
+									<label style="margin-left: 30px; display: block;">
+										<input type="radio" name="incall_option" value="{{ $key }}" id="{{ $key == 'define_yourself' ? 'incall_define_yourself' : '' }}" style="display: inline-block;">
+										{{ $incallOption }}
+									</label>
+									@endforeach
+									<input type="text" name="incall_define_yourself" style="display: none; margin-left: 45px;">
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="form-group">
+								<label class="control control--checkbox">
+									<input type="checkbox" name="outcall" value="1" id="outcall_availability"><a>Outcall</a>
+									<div class="control__indicator"></div>
+								</label>
+								<div class="outcall-options" style="display: none;">
+									@foreach(getOutcallOptions() as $key => $outcallOption)
+									<label style="margin-left: 30px; display: block;"">
+										<input type="radio" name="outcall_option" value="{{ $key }}" id="{{ $key == 'define_yourself' ? 'outcall_define_yourself' : '' }}" style="display: inline-block;">
+										{{ $outcallOption }}
+									</label>
+									@endforeach
+									<input type="text" name="outcall_define_yourself" style="display: none; margin-left: 45px;">
+								</div>
 							</div>
 						</div>
 					</section>
@@ -329,42 +417,76 @@
 					</section>
 					<h2>Services</h2>
 					<section data-step="5" class="services-section">
-						@foreach ($services->chunk(19) as $chunkedServices)
-						<div class="col-xs-6">
-							@foreach($chunkedServices as $service)
-							<div class="form-group">
-								<label class="control-label" style="display: block;">
-									<input type="checkbox" class="form-control" name="services[]" value="{{ $service->id }}" />
-									{{ $service->service_name }}
-								</label>
+						<h3>Services Offered For:</h3>
+						<div class="col-xs-12">
+							@foreach($serviceOptions as $serviceOption)
+							<label class="control control--checkbox"><a>{{ ucfirst($serviceOption->service_option_name) }}</a>
+								<input type="checkbox" name="service_options[]" value="{{ $contactOption->id }}">
+								<div class="control__indicator"></div>
+							</label>
+							@endforeach
+						</div>
+						<div class="service-list">
+							<h3>Service List</h3>
+							@foreach ($services->chunk(19) as $chunkedServices)
+							<div class="col-xs-6">
+								@foreach($chunkedServices as $service)
+								<div class="form-group">
+									<label class="control control--checkbox" style="display: block;"><a>{{ $service->service_name }}</a>
+										<input type="checkbox" class="form-control" name="services[]" value="{{ $service->id }}" />
+										<div class="control__indicator"></div>
+									</label>
+								</div>
+								@endforeach
 							</div>
 							@endforeach
 						</div>
-						@endforeach
 					</section>
 					<h2>Prices</h2>
 					<section data-step="6">
 						<div class="price_section">
-							<div class="col-xs-6">
+							<div class="col-xs-3">
 								<div class="form-group">
 									<label class="control-label">Duration</label>
 									<input type="text" class="form-control" name="service_duration"/>
 									<div class="help-block"></div>
 								</div>
 							</div>
-							<div class="col-xs-6">
+							<div class="col-xs-2">
+								<div class="form-group">
+									<label class="control-label">Unit</label>
+									<select name="service_price_unit" class="form-control">
+										@foreach(getUnits() as $unit)
+										<option value="{{ $unit }}">{{ ucfirst($unit) }}</option>
+										@endforeach
+									</select>
+									<div class="help-block"></div>
+								</div>
+							</div>
+							<div class="col-xs-3">
 								<div class="form-group">
 									<label class="control-label">Price</label>
 									<input type="text" class="form-control" name="service_price"/>
 									<div class="help-block"></div>
 								</div>
 							</div>
-							<div class="col-xs-6">
+							<div class="col-xs-2">
+								<div class="form-group">
+									<label class="control-label">Currency</label>
+									<select name="service_price_currency" class="form-control">
+										@foreach(getCurrencies() as $currency)
+										<option value="{{ $currency }}">{{ strtoupper($currency) }}</option>
+										@endforeach
+									</select>
+									<div class="help-block"></div>
+								</div>
+							</div>
+							<div class="col-xs-2">
 								<div class="form-group">
 									<label class="control-label">Type</label>
 									<select name="price_type" id="price_type" class="form-control">
 										@foreach(getPriceTypes() as $priceType)
-											<option value="{{ $priceType }}">{{ ucfirst($priceType) }}</option>
+										<option value="{{ $priceType }}">{{ ucfirst($priceType) }}</option>
 										@endforeach
 									</select>
 									<div class="help-block"></div>
@@ -372,7 +494,7 @@
 							</div>
 							<div class="col-xs-12">
 								<input type="hidden" name="add_price_token" value="{{ csrf_token() }}">
-								<button type="submit" class="add-new-price">Add New Price</button>
+								<button type="submit" class="add-new-price btn btn-default">Add New Price</button>
 							</div>
 						</div>
 						<div class="col-xs-12 price-table-container">
@@ -402,8 +524,50 @@
 							</table>
 						</div>
 					</section>
-					<h2>Packages</h2>
+					<h2>Languages</h2>
 					<section data-step="7">
+						<table class="table language-table">
+							<thead>
+								<tr>
+									<th>Language</th>
+									<th>Level</th>
+								</tr>
+							</thead>
+							<tbody class="language-list">
+								@foreach($spokenLanguages->take(7) as $language)
+								<tr>
+									<td>
+										<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
+										{{ $language->spoken_language_name }}
+									</td>
+									<td>
+										<div class="slider"></div>
+										<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->id }}]" value="">
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+							<tbody class="language-list" style="display: none;">
+								@foreach($spokenLanguages->splice(7) as $language)
+								<tr>
+									<td>
+										<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
+										{{ $language->spoken_language_name }}
+									</td>
+									<td>
+										<div class="slider"></div>
+										<input type="hidden" name="spoken_language[{{ $language->id }}]" value="0">
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+						<div class="show-more text-center">
+							<a href="#" class="btn btn-default">Show More</a>
+						</div>
+					</section>
+					<h2>Packages</h2>
+					<section data-step="8">
 						<div class="col-xs-12 default-packages-section" id="default-packages-section">
 							<h3>Default Packages</h3>
 							<div class="has-error">
@@ -427,11 +591,11 @@
 										<td>{{ $package->package_duration }}</td>
 										<td>{{ $package->package_price }}</td>
 										<td>
-											<input type="text" class="package_activation" id="package_activation{{ $counter }}">
+											<input type="text" name="default_package_activation_date[{{ $package->id }}]" class="package_activation" id="package_activation{{ $counter }}">
 										</td>
 										<td>
 											<label>
-												<input type="radio" class="option-input radio ullalla-package-radio" name="ullalla_package" />
+												<input type="radio" class="option-input radio ullalla-package-radio" name="ullalla_package[]" value="{{ $package->id }}" />
 											</label>
 										</td>
 									</tr>
@@ -459,11 +623,11 @@
 										<td>{{ $package->package_duration }}</td>
 										<td>{{ $package->package_price }}</td>
 										<td>
-											<input type="text" class="package_month_girl_activation" id="package_month_activation{{ $counter }}">
+											<input type="text" name="month_girl_package_activation_date[{{ $package->id }}]" class="package_month_girl_activation" id="package_month_activation{{ $counter }}">
 										</td>
 										<td>
 											<label>
-												<input type="checkbox" class="option-input checkbox ullalla-package-checkbox" name="ullalla_package_month_girl" />
+												<input type="checkbox" class="option-input checkbox ullalla-package-checkbox" name="ullalla_package_month_girl[]" value="{{ $package->id }}"/>
 											</label>
 										</td>
 									</tr>
@@ -473,10 +637,6 @@
 							</table>
 						</div>
 					</section>
-					<div class="chosen-package">
-						<input type="hidden" name="package_activation_date">
-						<input type="hidden" name="package_month_girl_activation_date">
-					</div>
 					<input type="hidden" name="stripeToken" id="stripeToken">
 					<input type="hidden" name="stripeEmail" id="stripeEmail">
 					{!! Form::close() !!}
@@ -502,7 +662,37 @@
 // show modal on page load
 $(window).on('load',function(){
 	$('#create_profile_modal').modal('show');
+	$('.slider').slider({
+		range: "min",
+		value: 0,
+		step: 1,
+		min: 0,
+		max: 5,
+		slide: function( event, ui ) {
+			console.log(ui.value);
+			$(this).next('input.spoken-language-input').val(ui.value);
+		}
+	});
 });
+
+// if user changes the value of input field (in some cases can be useful)
+// $(function () {
+// 	$('input[name="spoken_language"]').change(function () {
+// 		var value = this.value.substring(1);
+// 		console.log(value);
+// 		$(this).siblings('.slider').slider('value', parseInt(value));
+// 	});
+// });
+
+$(function () {
+	$('.show-more a').on('click', function(e){
+		var that = $(this);
+		e.preventDefault();
+		that.text(that.text() == 'Show More' ? 'Show Less' : 'Show More');
+		$('table.language-table').find('.language-list:last-child').toggle();
+	});
+});
+
 $(function () {
 // disabled modal closing on outside click and escape
 $('#create_profile_modal').modal({
@@ -660,11 +850,20 @@ $(function () {
 		var serviceDuration = $('input[name="service_duration"]').val();
 		var servicePrice = $('input[name="service_price"]').val();
 		var priceType = $('select[name="price_type"]').val();
+		var servicePriceUnit = $('select[name="service_price_unit"]').val();
+		var servicePriceCurrency = $('select[name="service_price_currency"]').val();
 		var token = $(this).siblings('input').val();
 		$.ajax({
 			url: location.protocol + '//' + location.host + '/ajax/add_new_price',
 			type: 'post',
-			data: {service_duration: serviceDuration, service_price: servicePrice, price_type: priceType, _token: token},
+			data: {
+				service_duration: serviceDuration, 
+				service_price: servicePrice, 
+				price_type: priceType,
+				service_price_unit: servicePriceUnit,
+				service_price_currency: servicePriceCurrency,
+				_token: token
+			},
 			success: function (data) {
 				var priceSection = $('.price_section');
 				var errors = data.errors;
@@ -680,14 +879,16 @@ $(function () {
 	            // add row
 	            var row = $('<tr></tr>');
 	            // add tds to newly created row
+	            var priceType = data.priceType;
 	            var td = $('<td></td>', {
-	            	text: data.priceType
+	            	text: capitalizeFirstLetter(priceType)
 	            });
 	            var td1 = $('<td></td>', {
-	            	text: data.serviceDuration
+	            	text: data.serviceDuration + ' ' + data.servicePriceUnit
 	            });
+	            var currency = data.servicePriceCurrency;
 	            var td2 = $('<td></td>', {
-	            	text: data.servicePrice
+	            	text: data.servicePrice + ' ' + currency.toUpperCase()
 	            });
 	            var td3 = $('<td></td>');
 	            var glyphiconSpan = $('<span></span>', {
@@ -745,62 +946,51 @@ $(function () {
 		$('input.ullalla-package-checkbox:checkbox').not(this).prop('checked', false);
 	});
 });
+</script>
 
-$(function () {
-	$('.package_activation, .package_month_girl_activation').on('keyup blur', function () {
-		var that = $(this);
-		var thatRowCheckbox = that.parent('td').next().find('input');
-		if (thatRowCheckbox.prop('checked')) {
-			if (thatRowCheckbox.is(':radio')) {
-				$('.chosen-package input[name="package_activation_date"]').val(that.val());
-			} else if (thatRowCheckbox.is(':checkbox')) {
-				$('.chosen-package input[name="package_month_girl_activation_date"]').val(that.val());
-			}
-		}
+<!-- Contact script -->
+<script>
+	$(function () {
+		$('input#skype_contact').on('click', function () {
+			$('.skype-name').toggle();
+		});
 	});
+</script>
 
-	$('input.ullalla-package-checkbox, input.ullalla-package-radio').on('change', function () {
-		var that = $(this);
-		var token = $('input[name="_token"]').val();
-		var thatRowActivationDate = that.closest('td').prev().find('input');
 
-		if (that.is(':radio')) {
-			var url = getUrl('/ajax/store_default_package');
-			var package = that.closest('tr').index() + 1;
-			$.ajax({
-				url: url,
-				data: {_token: token, package_id: package, radioState: that.val()},
-				type: 'post',
-				success: function (data) {
-					return true;
-				}
-			});
-			// update package activation date hidden input
-			if (that.prop('checked')) {
-				$('.chosen-package input[name="package_activation_date"]').val(thatRowActivationDate.val());
-			} else {
-				$('.chosen-package input[name="package_activation_date"]').val('');
-			}
-		} else if (that.is(':checkbox')) {
-			var url = getUrl('/ajax/store_month_girl_package');
-			var package = that.closest('tr').index() + 1;
-			$.ajax({
-				url: url,
-				data: {_token: token, package_id: package, radioState: that.prop('checked') ? that.val() : 'off'},
-				type: 'post',
-				success: function (data) {
-					return true;
-				}
-			});
-			// update package activation date hidden input
-			if (that.prop('checked')) {
-				$('.chosen-package input[name="package_month_girl_activation_date"]').val(thatRowActivationDate.val());
-			} else {
-				$('.chosen-package input[name="package_month_girl_activation_date"]').val('');
-			}
-		}
+<!-- Workplace script -->
+<script>
+	$(function () {
+		var incallDefineYourself = $('input[name="incall_define_yourself"]');
+		var outcallDefineYourself = $('input[name="outcall_define_yourself"]');
+
+		$('input#incall_availability').on('click', function () {
+			$('.incall-options').toggle();
+			incallDefineYourself.val('');
+			$('input[name="incall_option"]').prop('checked', false);
+		});
+		$('input#outcall_availability').on('click', function () {
+			$('.outcall-options').toggle();
+			outcallDefineYourself.val('');
+			$('input[name="outcall_option"]').prop('checked', false);
+		});
+
+		$('input#incall_define_yourself').on('click', function () {
+			incallDefineYourself.show();
+		});
+		$('.incall-options label input').not('#incall_define_yourself').on('click', function () {
+			incallDefineYourself.hide();
+			incallDefineYourself.val('');
+		});
+
+		$('input#outcall_define_yourself').on('click', function () {
+			outcallDefineYourself.show();
+		});
+		$('.outcall-options label input').not('#outcall_define_yourself').on('click', function () {
+			outcallDefineYourself.hide();
+			outcallDefineYourself.val('');
+		});
 	});
-});
 </script>
 
 <script>
@@ -866,7 +1056,8 @@ $(function () {
 	});
 </script>
 
-<script src="https://checkout.stripe.com/checkout.js"></script>
+
+{{-- <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
 	let stripe = StripeCheckout.configure({
 		key: '{{ config('services.stripe.key') }}',
@@ -900,6 +1091,6 @@ $(function () {
 		});
 		e.preventDefault();	
 	});
-</script>
+</script> --}}
 @stop
 

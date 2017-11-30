@@ -1,4 +1,8 @@
  /****** Form Validation Profile Style ******/
+.wizard > .steps > ul > li {
+  width: 33%;
+}
+
  .wizard .content {
   min-height: 100px;
 }

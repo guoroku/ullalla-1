@@ -12,6 +12,9 @@ class DatabaseSeeder extends Seeder
         'packages',
         'users',
         'roles',
+        'contact_options',
+        'service_options',
+        'spoken_languages',
 	];
 
     /**
@@ -33,5 +36,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserTypeTableSeeder::class);
         $this->call(UserTableSeeder::class);
         $this->call(RoleTableSeeder::class);
+        $this->call(ContactOptionTableSeeder::class);
+        $this->call(ServiceOptionTableSeeder::class);
+        $this->call(SpokenLanguageTableSeeder::class);
     }
 }

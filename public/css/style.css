@@ -1301,14 +1301,17 @@ th {
   }
 
   /* Services */
-  .services-section label {
+  .services-section .service-list {
+    margin-top: 20px;
+  }
+  /*.services-section .service-list label {
     display: block; 
     text-align: left !important;
     padding-left: 15px;
     text-indent: -15px;
-  }
+  }*/
 
-  .services-section input.form-control {
+  /*.services-section input.form-control {
     width: 13px !important;
     height: 13px !important;
     padding: 0;
@@ -1317,7 +1320,7 @@ th {
     position: relative;
     top: -1px;
     overflow: hidden;
-  }
+  }*/
 
   /********* UPLOAD CARE GENERAL *********/
   .section-create-profile .uploadcare--widget {

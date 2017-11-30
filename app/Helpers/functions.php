@@ -55,6 +55,40 @@ function getShaveOptions() {
 	return ['shaved', 'partial', 'hairy'];
 }
 
+function getUnits() {
+	return ['days', 'hours', 'minutes'];
+}
+
+function getPreferedOptions() {
+	return [
+		'sms_and_call' => 'SMS And Call',
+		'sms_only' => 'SMS Only',
+		'call_only' => 'Call Only',
+	];
+}
+
+function getIncallOptions() {
+	return [
+		'private_apartment' => 'Private Apartment',
+		'hotel' => 'Hotel',
+		'club_studio' => 'Club/Studio',
+		'define_yourself' => 'Define Yourself',
+	];
+}
+
+function getOutcallOptions() {
+	return [
+		'home' => 'Home',
+		'hotel' => 'Hotel',
+		'home_and_hotel' => 'Home And Hotel',
+		'define_yourself' => 'Define Yourself',
+	];
+}
+
+function getCurrencies() {
+	return ['chf', 'eur', 'usd'];
+}
+
 function getPriceTypes() {
 	return ['outcall', 'incall'];
 }
@@ -222,6 +256,7 @@ function getEditProfilePages() {
 	return [
 		'bio' => 'Bio', 
 		'about_me' => 'About Me', 
+		'languages' => 'Languages', 
 		'gallery' => 'Gallery', 
 		'contact' => 'Contact', 
 		'services' => 'Services', 
@@ -316,6 +351,13 @@ function daysToAddToExpiry($package_id) {
 	}
 
 	return $days;
+}
+
+function array_search_reverse($key, $array){
+	if (isset($array[$key])) {
+		return $array[$key];
+	}
+	return null;
 }
 
 ?>

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWorkingHoursTable extends Migration
+class CreateContactOptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateWorkingHoursTable extends Migration
      */
     public function up()
     {
-        Schema::create('working_hours', function (Blueprint $table) {
+        Schema::create('contact_options', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('contact_option_name');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateWorkingHoursTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('working_hours');
+        Schema::dropIfExists('contact_options');
     }
 }

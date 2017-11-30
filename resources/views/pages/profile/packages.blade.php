@@ -81,12 +81,11 @@
 							<td>{{ $package->package_duration }}</td>
 							<td>{{ $package->package_price }}</td>
 							<td>
-								<input type="text" class="package_activation" id="package_activation{{ $counter }}">
+								<input type="text" name="default_package_activation_date[{{ $package->id }}]" class="package_activation" id="package_activation{{ $counter }}">
 							</td>
 							<td>
-
 								<label>
-									<input type="radio" class="option-input radio ullalla-package-radio" name="ullalla_package"/>
+									<input type="radio" class="option-input radio ullalla-package-radio" name="ullalla_package[]" value="{{ $package->id }}" />
 								</label>
 							</td>
 						</tr>
@@ -94,6 +93,9 @@
 						@endforeach
 					</tbody>
 				</table>
+				@if(!$showGotmPackages)
+				<button type="submit" class="btn btn-default">Save Changes</button>
+				@endif
 			</div>
 			@endif
 
@@ -117,11 +119,11 @@
 							<td>{{ $package->package_duration }}</td>
 							<td>{{ $package->package_price }}</td>
 							<td>
-								<input type="text" class="package_month_girl_activation" id="package_month_activation{{ $counter }}">
+								<input type="text" name="month_girl_package_activation_date[{{ $package->id }}]" class="package_month_girl_activation" id="package_month_activation{{ $counter }}">
 							</td>
 							<td>
 								<label>
-									<input type="checkbox" class="option-input checkbox ullalla-package-checkbox" name="ullalla_package_month_girl" />
+									<input type="checkbox" class="option-input checkbox ullalla-package-checkbox" name="ullalla_package_month_girl[]" value="{{ $package->id }}"/>
 								</label>
 							</td>
 						</tr>
@@ -132,10 +134,6 @@
 				<button type="submit" class="btn btn-default">Save Changes</button>
 			</div>
 			@endif
-			<div class="chosen-package">
-				<input type="hidden" name="package_activation_date">
-				<input type="hidden" name="package_month_girl_activation_date">
-			</div>
 			<input type="hidden" name="stripeToken" id="stripeToken">
 			<input type="hidden" name="stripeEmail" id="stripeEmail">
 			{!! Form::close() !!}
@@ -191,71 +189,6 @@
 	});
 </script>
 
-<!-- Pacakges script -->
-<script>
-	$(function () {
-		// my checkbox act like a radio button
-		$("input.ullalla-package-checkbox:checkbox").on('change', function() {
-			$('input.ullalla-package-checkbox:checkbox').not(this).prop('checked', false);
-		});
-
-		$('.package_activation, .package_month_girl_activation').on('keyup blur', function () {
-			var that = $(this);
-			var thatRowCheckbox = that.parent('td').next().find('input');
-			if (thatRowCheckbox.prop('checked')) {
-				if (thatRowCheckbox.is(':radio')) {
-					$('.chosen-package input[name="package_activation_date"]').val(that.val());
-				} else if (thatRowCheckbox.is(':checkbox')) {
-					$('.chosen-package input[name="package_month_girl_activation_date"]').val(that.val());
-				}
-			}
-		});
-
-		$('input.ullalla-package-checkbox, input.ullalla-package-radio').on('change', function () {
-			var that = $(this);
-			var token = $('input[name="_token"]').val();
-			var thatRowActivationDate = that.closest('td').prev().find('input');
-
-			if (that.is(':radio')) {
-				var url = getUrl('/ajax/store_default_package');
-				var package = that.closest('tr').index() + 1;
-				$.ajax({
-					url: url,
-					data: {_token: token, package_id: package, radioState: that.val()},
-					type: 'post',
-					success: function (data) {
-						return true;
-					}
-				});
-			// update package activation date hidden input
-			if (that.prop('checked')) {
-				$('.chosen-package input[name="package_activation_date"]').val(thatRowActivationDate.val());
-			} else {
-				$('.chosen-package input[name="package_activation_date"]').val('');
-			}
-		} else if (that.is(':checkbox')) {
-			var url = getUrl('/ajax/store_month_girl_package');
-			var package = that.closest('tr').index() + 1;
-			$.ajax({
-				url: url,
-				data: {_token: token, package_id: package, radioState: that.prop('checked') ? that.val() : 'off'},
-				type: 'post',
-				success: function (data) {
-					return true;
-				}
-			});
-			// update package activation date hidden input
-			if (that.prop('checked')) {
-				$('.chosen-package input[name="package_month_girl_activation_date"]').val(thatRowActivationDate.val());
-			} else {
-				$('.chosen-package input[name="package_month_girl_activation_date"]').val('');
-			}
-		}
-	});
-	});
-</script>
-</script>
-
 <!-- Stripe integration -->
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
@@ -279,7 +212,13 @@
 			.done(function (response, textStatus) {
 				var errors = response.errors;
 				if (errors) {
-					$('div.packages-errors').addClass('alert alert-danger').text('Default package is required');
+					if (typeof errors.default_package_error !== 'undefined') {
+						$('div.packages-errors').addClass('alert alert-danger').text('Default package is required');
+					} else if (typeof errors.month_girl_package_error !== 'undefined') {
+						$('div.packages-errors').addClass('alert alert-danger').text('Please, choose the package');
+					} else {
+						window.location.href = 'http://ullalla.app/@' + username  + '/packages';
+					}
 				} else {
 					window.location.href = 'http://ullalla.app/@' + username  + '/packages';
 				}
