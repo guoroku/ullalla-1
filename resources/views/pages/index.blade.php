@@ -2,10 +2,14 @@
 
 @section('content')
 
+@section('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.6/sweetalert2.min.css">
+@stop
+
 <section class="slider-area home-4">
-    
+
     @if ((Session::has('defaultGirlPackageExpired') && $defaultPackageExpired) 
-        || (Session::has('gotmPackageExpired') && $gotmPackageExpired))
+    || (Session::has('gotmPackageExpired') && $gotmPackageExpired))
     <!-- Modal -->
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -17,11 +21,11 @@
                 </div>
                 <div class="modal-body">
                     @if($defaultPackageExpired)
-                        <p>{{ $defaultPackageExpired->note }}</p>
+                    <p>{{ $defaultPackageExpired->note }}</p>
                     @endif
                     @if($gotmPackageExpired)
-                        <p>{{ $gotmPackageExpired->note }}</p>
-                        @endif
+                    <p>{{ $gotmPackageExpired->note }}</p>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -193,9 +197,6 @@
                     </div>
                 </div>
             </div>
-            @if (Session::has('success'))
-            {{ Session::get('success') }}
-            @endif
             <div class="row">
                 <div class="featured-product-carousel single-indicator">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
@@ -452,6 +453,25 @@
     @stop
 
     @section('perPageScripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.6/sweetalert2.all.min.js"></script>
+    @if(Session::has('not_approved'))
+    <script>
+        swal(
+            'Oops...',
+            '{{ Session::get('not_approved') }}',
+            'error'
+        );
+    </script>
+    @endif
+    @if(Session::has('success'))
+    <script>
+        swal(
+            'Good job!',
+            '{{ Session::get('success') }}',
+            'success'
+        );
+    </script>
+    @endif
     <script>
         $(function () {
             var modal = $('#myModal');

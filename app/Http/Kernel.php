@@ -58,7 +58,8 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'roles' => \App\Http\Middleware\CheckRole::class,
-        'approved' => \App\Http\Middleware\CheckIfApproved::class,
+        'has_package' => \App\Http\Middleware\CheckIfHasPackage::class,
         'package.expiry' => \App\Http\Middleware\RedirectIfPackageExpired::class,
+        'approved' => \App\Http\Middleware\CheckIfApproved::class,
     ];
 }

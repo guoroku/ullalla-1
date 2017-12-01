@@ -18,6 +18,11 @@
 		<div class="col-sm-10 profile-info">
 			<h3>Languages</h3>
 			<div class="row">
+				@if(session()->has('success'))
+					<div class="alert alert-success">
+						{{ session()->get('success') }}
+					</div>
+				@endif
 				{!! Form::model($user, ['url' => '@' . $user->username . '/languages/store', 'method' => 'put']) !!}
 				<table class="table language-table">
 					<thead>
@@ -33,9 +38,16 @@
 								<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
 								{{ $language->spoken_language_name }}
 							</td>
+							@php
+							$spokenLanguage = $user->spoken_languages()->where('spoken_language_id', $language->id)->first();
+							$value = null;
+							if ($spokenLanguage) {
+								$value = $spokenLanguage->pivot->language_level;
+							}
+							@endphp
 							<td>
 								<div class="slider"></div>
-								<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->id }}]" value="">
+								<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->id }}]" value="{{ $value > 0 ? $value : 0 }}">
 							</td>
 						</tr>
 						@endforeach
@@ -47,9 +59,17 @@
 								<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
 								{{ $language->spoken_language_name }}
 							</td>
+							@php
+							$spokenLanguage = $user->spoken_languages()->where('spoken_language_id', $language->id)->first();
+							$value = null;
+
+							if ($spokenLanguage) {
+								$value = $spokenLanguage->pivot->language_level;
+							}
+							@endphp
 							<td>
 								<div class="slider"></div>
-								<input type="hidden" name="spoken_language[{{ $language->id }}]" value="0">
+								<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->id }}]" value="{{ $value > 0 ? $value : 0 }}">
 							</td>
 						</tr>
 						@endforeach
@@ -58,6 +78,7 @@
 				<div class="show-more text-center">
 					<a href="#" class="btn btn-default">Show More</a>
 				</div>
+                <button type="submit" class="btn btn-default">Save Changes</button>
 				{!! Form::close() !!}
 			</div>
 		</div>
@@ -68,26 +89,28 @@
 @section('perPageScripts')
 <script>
 	$(function () {
-		$('.slider').slider({
-			range: "min",
-			value: 0,
-			step: 1,
-			min: 0,
-			max: 5,
-			slide: function( event, ui ) {
-				console.log(ui.value);
-				$(this).next('input.spoken-language-input').val(ui.value);
-			}
+		$(".slider").each(function() {
+			var that = $(this);
+			that.slider({
+				range: "min", 
+				value: that.next('input').val(),
+				step: 1,
+				min: 0, 
+				max: 5, 
+				slide: function(event, ui){
+					that.next('input.spoken-language-input').val(ui.value);
+				}
+			});
 		});
 	});
 
 	$(function () {
-	$('.show-more a').on('click', function(e){
-		var that = $(this);
-		e.preventDefault();
-		that.text(that.text() == 'Show More' ? 'Show Less' : 'Show More');
-		$('table.language-table').find('.language-list:last-child').toggle();
+		$('.show-more a').on('click', function(e){
+			var that = $(this);
+			e.preventDefault();
+			that.text(that.text() == 'Show More' ? 'Show Less' : 'Show More');
+			$('table.language-table').find('.language-list:last-child').toggle();
+		});
 	});
-});
 </script>
 @stop

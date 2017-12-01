@@ -37,7 +37,13 @@
 						<span class="focus-border"></span>
 					</div>
 				</div>
-
+				<div class="col-sm-4">
+					<div class="col-3 input-effect">
+						<input class="effect-16" type="text" placeholder="" name="zip_code" value="{{ $user->zip_code }}">
+						<label>Zip Code</label>
+						<span class="focus-border"></span>
+					</div>
+				</div>
 				<div class="col-sm-4">
 					<div class="col-3 input-effect">
 						<input class="effect-16" type="text" placeholder="" name="address" value="{{ $user->address }}">
@@ -47,8 +53,8 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="col-3 input-effect">
-						<input class="effect-16" type="text" placeholder="" name="zip_code" value="{{ $user->zip_code }}">
-						<label>Zip Code</label>
+						<input class="effect-16" type="text" placeholder="" name="club_name" value="{{ $user->club_name }}">
+						<label>Club Name</label>
 						<span class="focus-border"></span>
 					</div>
 				</div>

@@ -1111,3 +1111,9 @@ table.working-times-table .control--checkbox a,
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
+
+/**** Contact ******/
+.skype-name {
+  clear: both;
+}

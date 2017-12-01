@@ -22,23 +22,45 @@
             </div>
             {!! Form::model($user, ['url' => '@' . $user->username . '/prices/store', 'method' => 'put']) !!}
             <div class="price_section">
-                <div class="col-xs-6">
+                <div class="col-xs-3">
                     <div class="form-group">
-                        <label class="control-label">Duration</label>
-                        <input type="text" class="form-control" name="service_duration"/>
+                        <label>Duration</label>
+                        <input type="text" class="form-control" name="service_duration" style="margin-top: 0px;" />
                         <div class="help-block"></div>
                     </div>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-2">
                     <div class="form-group">
-                        <label class="control-label">Price</label>
-                        <input type="text" class="form-control" name="service_price"/>
+                        <label>Unit</label>
+                        <select name="service_price_unit" class="form-control">
+                            @foreach(getUnits() as $unit)
+                            <option value="{{ $unit }}">{{ ucfirst($unit) }}</option>
+                            @endforeach
+                        </select>
                         <div class="help-block"></div>
                     </div>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-2">
                     <div class="form-group">
-                        <label class="control-label">Type</label>
+                        <label>Price</label>
+                        <input type="text" class="form-control" name="service_price" style="margin-top: 0px;" />
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <select name="service_price_currency" class="form-control">
+                            @foreach(getCurrencies() as $currency)
+                            <option value="{{ $currency }}">{{ strtoupper($currency) }}</option>
+                            @endforeach
+                        </select>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label>Type</label>
                         <select name="price_type" id="price_type" class="form-control">
                             @foreach(getPriceTypes() as $priceType)
                             <option value="{{ $priceType }}">{{ ucfirst($priceType) }}</option>
@@ -68,9 +90,9 @@
                     <tbody id="prices_body">
                         @foreach ($user->prices as $price)
                         <tr>
-                            <td>{{ $price->price_type }}</td>
-                            <td>{{ $price->service_duration }}</td>
-                            <td>{{ $price->service_price }}</td>
+                            <td>{{ ucfirst($price->price_type) }}</td>
+                            <td>{{ $price->service_duration . ' ' . $price->service_price_unit }}</td>
+                            <td>{{ $price->service_price . ' ' . strtoupper($price->service_price_currency) }}</td>
                             <td>
                                 <a href="{{ url('ajax/delete_price/' . $price->id) }}" class="text-danger delete-price" onclick="return confirm('Are you sure?');">
                                     <span class="glyphicon glyphicon-trash"></span>
@@ -95,11 +117,20 @@
         var serviceDuration = $('input[name="service_duration"]').val();
         var servicePrice = $('input[name="service_price"]').val();
         var priceType = $('select[name="price_type"]').val();
+        var servicePriceUnit = $('select[name="service_price_unit"]').val();
+        var servicePriceCurrency = $('select[name="service_price_currency"]').val();
         var token = $(this).siblings('input').val();
         $.ajax({
             url: location.protocol + '//' + location.host + '/ajax/add_new_price',
             type: 'post',
-            data: {service_duration: serviceDuration, service_price: servicePrice, price_type: priceType, _token: token},
+            data: {
+                service_duration: serviceDuration, 
+                service_price: servicePrice, 
+                price_type: priceType,
+                service_price_unit: servicePriceUnit,
+                service_price_currency: servicePriceCurrency,
+                _token: token
+            },
             success: function (data) {
                 var priceSection = $('.price_section');
                 var errors = data.errors;
@@ -115,14 +146,16 @@
                 // add row
                 var row = $('<tr></tr>');
                 // add tds to newly created row
+                var priceType = data.priceType;
                 var td = $('<td></td>', {
-                    text: data.priceType
+                    text: capitalizeFirstLetter(priceType)
                 });
                 var td1 = $('<td></td>', {
-                    text: data.serviceDuration
+                    text: data.serviceDuration + ' ' + data.servicePriceUnit
                 });
+                var currency = data.servicePriceCurrency;
                 var td2 = $('<td></td>', {
-                    text: data.servicePrice
+                    text: data.servicePrice + ' ' + currency.toUpperCase()
                 });
                 var td3 = $('<td></td>');
                 var glyphiconSpan = $('<span></span>', {

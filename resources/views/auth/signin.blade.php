@@ -32,6 +32,11 @@
                         <div class="pull-left" style="margin-left: -15px;">
                             <a href="{{ url('password/reset') }}">Forgot Password?</a>
                         </div>
+                        @if (Session::has('error'))
+                            <div class="help-block">
+                                {{ Session::get('error') }}
+                            </div>
+                        @endif
                         <div class="pull-right" style="margin-right: -15px;">
                             <button type="submit" class="btn btn-outline-success btn-md">Sign In</button>
                         </div>

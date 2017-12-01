@@ -26,8 +26,30 @@ class ProfileController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('approved', ['except' => ['postCreate', 'getCreate', 'postNewPrice', 'deletePrice']]);
-        $this->middleware('package.expiry', ['except' => ['getPackages', 'postPackages', 'getCreate', 'postCreate', 'postNewPrice', 'deletePrice']]);
+        $this->middleware('has_package', [
+            'only' => [
+                'getCreate', 
+                'postCreate'
+            ]
+        ]);
+        $this->middleware('approved', [
+            'except' => [
+                'getCreate', 
+                'postCreate', 
+                'postNewPrice', 
+                'deletePrice'
+            ]
+        ]);
+        $this->middleware('package.expiry', [
+            'except' => [
+                'getPackages', 
+                'postPackages', 
+                'getCreate', 
+                'postCreate', 
+                'postNewPrice', 
+                'deletePrice'
+            ]
+        ]);
     }
 
     public function getCreate()
@@ -176,7 +198,6 @@ class ProfileController extends Controller
             $user->service_options()->sync(request('service_options'));
             $user->contact_options()->sync(request('contact_options'));
             $user->spoken_languages()->sync($syncData);
-            $user->save();
 
         } catch (\Exception $e) {
             return response()->json([
@@ -294,17 +315,31 @@ class ProfileController extends Controller
     public function getContact()
     {
         $user = Auth::user();
+        $contactOptions = ContactOption::all();
 
-        return view('pages.profile.contact', compact('user'));
+        return view('pages.profile.contact', compact('user', 'contactOptions'));
     }
 
-    public function postContact()
+    public function postContact(Request $request)
     {
         $user = Auth::user();
+
+        $this->validate($request, [
+            'skype_name' => 'required_with:contact_options.3,on'
+        ], ['required_with' => 'Skype name is required']);
+
         $user->phone = request('phone');
         $user->mobile = request('mobile');
+        $user->website = request('website');
+        $user->prefered_contact_option = request('prefered_contact_option');
+        $user->skype_name = request('contact_options') && in_array('3', request('contact_options')) ? request('skype_name') : NULL;
+        $user->no_withheld_numbers = request('no_withheld_numbers') ? '1' : '0';
         $user->save();
-        
+
+        $user->contact_options()->sync(request('contact_options'));
+
+        $request->flash();
+
         return redirect()->back()->with('success', 'Contact successfully updated.');
     }
 
@@ -339,6 +374,7 @@ class ProfileController extends Controller
         $user->city = request('city');
         $user->address = request('address');
         $user->zip_code = request('zip_code');
+        $user->club_name = request('club_name');
         $user->save();
 
         return redirect()->back()->with('success', 'Workplace successfully updated.');
@@ -383,7 +419,18 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $user->save();
+        // define languages input
+        $spokenLanguages = array_filter(request('spoken_language'), function($value) { return $value != '0' && $value != null; });
+
+        // define levels
+        $levels = array_map(function($languageLevel) {
+            return ['language_level' => $languageLevel];
+        }, $spokenLanguages);
+
+        // get combined data
+        $syncData = array_combine(array_keys($spokenLanguages), $levels);
+        // sync data and save
+        $user->spoken_languages()->sync($syncData);
 
         return redirect()->back()->with('success', 'Languages successfully updated.');
     }
@@ -589,8 +636,9 @@ class ProfileController extends Controller
             'service_price_currency' => 'required',
         ]);
 
+
         $user = Auth::user();
-        
+
         if ($request->ajax()) {
             if ($validator->passes()) {
                 // insert new price

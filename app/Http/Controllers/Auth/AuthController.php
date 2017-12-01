@@ -77,7 +77,7 @@ class AuthController extends Controller
 			}
 
             // user can sign in
-			if ($user->approved == '1') {
+			if ($user->package1_id) {
 
 				// get expiry date days before expiration
 				$expiryDateDefaultPackage = getPackageExpiryDate(getDaysForExpiry($user->package1_id));

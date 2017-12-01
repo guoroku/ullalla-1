@@ -1056,7 +1056,6 @@ $(function () {
 	});
 </script>
 
-
 {{-- <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
 	let stripe = StripeCheckout.configure({
