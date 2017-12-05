@@ -43,7 +43,7 @@ class CreateUsersTable extends Migration
             $table->string('intimate')->nullable();
             $table->string('smoker')->nullable();
             $table->string('alcohol')->nullable();
-            $table->string('about_me')->nullable();
+            $table->text('about_me')->nullable();
             $table->string('photos')->nullable();
             $table->string('videos')->nullable();
             $table->string('phone')->nullable();

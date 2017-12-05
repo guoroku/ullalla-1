@@ -13,15 +13,7 @@ class CantonTableSeeder extends Seeder
     public function run()
     {
         $canton = new canton;
-        $canton->canton_name = 'Waadt';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Genf';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Freiburg';
+        $canton->canton_name = 'Zürich';
         $canton->save();
 
         $canton = new canton;
@@ -29,35 +21,15 @@ class CantonTableSeeder extends Seeder
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Wallis';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Neuenburg';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Jura';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Solothurn';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Basel-Landschaft';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Basel-Stadt';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Aargau';
-        $canton->save();
-
-        $canton = new canton;
         $canton->canton_name = 'Luzern';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Uri';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Schwyz';
         $canton->save();
 
         $canton = new canton;
@@ -69,51 +41,31 @@ class CantonTableSeeder extends Seeder
         $canton->save();
 
         $canton = new canton;
+        $canton->canton_name = 'Glarus';
+        $canton->save();
+
+        $canton = new canton;
         $canton->canton_name = 'Zug';
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Uri';
+        $canton->canton_name = 'Fribourg';
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Schwytz';
+        $canton->canton_name = 'Solothurn';
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Tessin';
+        $canton->canton_name = 'Basel-Stadt';
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Graubünden';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'IT';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'St. Gallen';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Zürich';
+        $canton->canton_name = 'Basel-Landschaft';
         $canton->save();
 
         $canton = new canton;
         $canton->canton_name = 'Schaffhausen';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Büsingen';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Thurgau';
-        $canton->save();
-
-        $canton = new canton;
-        $canton->canton_name = 'Glarus';
         $canton->save();
 
         $canton = new canton;
@@ -125,7 +77,43 @@ class CantonTableSeeder extends Seeder
         $canton->save();
 
         $canton = new canton;
-        $canton->canton_name = 'Fürstentum Liechtenstein';
+        $canton->canton_name = 'St. Gallen';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Graubünden';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Aargau';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Thurgau';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Ticino';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Vaud';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Valais';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Neuchâtel';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Geneva';
+        $canton->save();
+
+        $canton = new canton;
+        $canton->canton_name = 'Jura';
         $canton->save();
     }
 }

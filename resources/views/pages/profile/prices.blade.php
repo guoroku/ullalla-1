@@ -78,7 +78,7 @@
             </div>
             {!! Form::close() !!}
             <div class="col-xs-12 price-table-container" style="margin-top: 30px;">
-                <table class="{{ $user->prices->count() == 0 ? 'is-hidden' : '' }}">
+                <table class="{{ $user->prices->count() == 0 ? 'is-hidden' : '' }} table">
                     <thead>
                         <tr>
                             <th>Type</th>

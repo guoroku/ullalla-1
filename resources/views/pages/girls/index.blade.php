@@ -31,18 +31,39 @@
 						<h2>Search Filter</h2>
 					</div>
 					<div class="left-sidebar">
-						<div class="shop-layout">
+						<div class="shop-layout canton-layout">
+							<div class="layout-title">
+								<h2>Canton</h2>
+							</div>
+							<div class="layout-list">
+								<ul>
+									<li>
+										<?php $num = 1; ?>
+										@foreach($cantons as $canton)
+										<label class="control control--checkbox">
+											<a href="{{ urldecode(route('girls', getUrlWithFilters(request('canton'), request()->query() , $num, 'canton', $canton), false)) }}">{{ $canton->canton_name }}
+												<span>({{ $canton->users()->approved()->payed()->count() }})</span>
+											</a>
+											<input type="checkbox" name="canton[]" value="{{ $canton->id }}" {{ request('canton') && in_array($canton->id, request('canton')) ? 'checked' : '' }}/>
+											<div class="control__indicator"></div>
+										</label>
+										<?php $num++; ?>
+										@endforeach
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="shop-layout services-layout">
 							<div class="layout-title">
 								<h2>Service</h2>
 							</div>
 							<div class="layout-list">
 								<ul>
 									<li>
-										<?php $num = 1; ?>
 										@foreach($services as $service)
 										<label class="control control--checkbox">
 											<a href="{{ urldecode(route('girls', getUrlWithFilters(request('services'), request()->query() , $num, 'services', $service), false)) }}">{{ $service->service_name }}
-												<span>({{ $service->users()->payed()->count() }})</span>
+												<span>({{ $service->users()->approved()->payed()->count() }})</span>
 											</a>
 											<input type="checkbox" name="services[]" value="{{ $service->id }}" {{ request('services') && in_array($service->id, request('services')) ? 'checked' : '' }}/>
 											<div class="control__indicator"></div>
@@ -135,6 +156,67 @@
 									</li>
 									<?php $num++; ?>
 									@endforeach
+								</ul>
+							</div>
+						</div>
+						<div class="shop-layout">
+							<div class="layout-title">
+								<h2>Breast Size</h2>
+							</div>
+							<div class="layout-list">
+								<ul>
+									<li>
+										@foreach(getPriceTypes() as $priceType)
+										@php 
+										$priceTypeQueryString = ['price_type' => $priceType];
+										$completeQueryString = [];
+										$requestQuery = request()->query();
+										if (!empty($requestQuery)) {
+											if (array_key_exists('price_type', $requestQuery)) {
+												if (!array_search($priceType, $requestQuery)) {
+													$completeQueryString = array_merge($requestQuery, $priceTypeQueryString);
+												} else {
+													unset($requestQuery['price_type']);
+													$completeQueryString = $requestQuery;
+												}
+											} else {
+												$completeQueryString = array_merge($requestQuery, $priceTypeQueryString);
+											}
+										} else {
+											$completeQueryString = array_merge($requestQuery, $priceTypeQueryString);
+										}
+
+										@endphp
+										<label class="control control--checkbox">
+											<a href="{{ urldecode(route('girls', $completeQueryString, false)) }}">{{ ucfirst($priceType) }}
+												<span>({{ \App\Models\User::approved()->payed()->whereNotNull($priceType . '_type')->count() }})</span>
+											</a>
+											<input type="radio" name="price_type" value="{{ $priceType }}" {{ request('price_type') && $priceType == request('price_type') ? 'checked' : '' }}/>
+											<div class="control__indicator"></div>
+										</label>
+										@endforeach
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="shop-layout services-layout">
+							<div class="layout-title">
+								<h2>Languages</h2>
+							</div>
+							<div class="layout-list">
+								<ul>
+									<li>
+										@foreach($spokenLanguages as $spokenLanguage)
+										<label class="control control--checkbox">
+											<a href="{{ urldecode(route('girls', getUrlWithFilters(request('spoken_languages'), request()->query() , $num, 'spoken_languages', $spokenLanguage), false)) }}">{{ $spokenLanguage->spoken_language_name }}
+												<span>({{ $spokenLanguage->users()->approved()->payed()->count() }})</span>
+											</a>
+											<input type="checkbox" name="spoken_languages[]" value="{{ $spokenLanguage->id }}" {{ request('spoken_languages') && in_array($spokenLanguage->id, request('spoken_languages')) ? 'checked' : '' }}/>
+											<div class="control__indicator"></div>
+										</label>
+										<?php $num++; ?>
+										@endforeach
+									</li>
 								</ul>
 							</div>
 						</div>

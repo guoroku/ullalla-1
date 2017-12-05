@@ -421,7 +421,7 @@
 						<div class="col-xs-12">
 							@foreach($serviceOptions as $serviceOption)
 							<label class="control control--checkbox"><a>{{ ucfirst($serviceOption->service_option_name) }}</a>
-								<input type="checkbox" name="service_options[]" value="{{ $contactOption->id }}">
+								<input type="checkbox" name="service_options[]" value="{{ $serviceOption->id }}">
 								<div class="control__indicator"></div>
 							</label>
 							@endforeach
@@ -1056,7 +1056,7 @@ $(function () {
 	});
 </script>
 
-{{-- <script src="https://checkout.stripe.com/checkout.js"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
 	let stripe = StripeCheckout.configure({
 		key: '{{ config('services.stripe.key') }}',
@@ -1090,6 +1090,6 @@ $(function () {
 		});
 		e.preventDefault();	
 	});
-</script> --}}
+</script>
 @stop
 

@@ -16,9 +16,26 @@
 			{!! parseEditProfileMenu('services') !!}
 		</div>
 		<div class="col-sm-10 profile-info">
-			<h3>Services</h3>
+			
 			{!! Form::model($user, ['url' => '@' . $user->username . '/services/store', 'method' => 'put']) !!}
-			<div class="row" style="margin-top: 20px;">
+			<h3>Services Offered For:</h3>
+			<div class="row">
+				<div class="col-xs-12">
+					@foreach($serviceOptions as $serviceOption)
+					<label class="control control--checkbox" style="display: inline-block;">
+						<a>{{ ucfirst($serviceOption->service_option_name) }}</a>
+						<input 
+						type="checkbox" 
+						name="service_options[]" 
+						value="{{ $serviceOption->id }}"
+						{{ in_array($serviceOption->id, $user->service_options()->pluck('service_option_id')->toArray()) ? 'checked' : '' }}>
+						<div class="control__indicator"></div>
+					</label>
+					@endforeach
+				</div>
+			</div>
+			<h3>Service List</h3>
+			<div class="row">
 				@foreach ($services->chunk(13) as $chunkedServices)
 				<div class="col-sm-4">
 					<div class="layout-list">
@@ -36,7 +53,7 @@
 				</div>
 				@endforeach
 			</div>
-				<button type="submit" class="btn btn-default">Save Changes</button>
+			<button type="submit" class="btn btn-default">Save Changes</button>
 			
 			{!! Form::close() !!}
 		</div>

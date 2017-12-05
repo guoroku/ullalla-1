@@ -141,7 +141,24 @@ class User extends Authenticatable
 
     public function hasContact()
     {
-        return ($this->address || $this->phone || $this->city || $this->mobile) ? true : false;
+        return (
+            $this->phone || 
+            $this->mobile || 
+            $this->contact_options()->count() || 
+            $this->skype_name || 
+            $this->prefered_contact_option
+        ) ? true : false;
+    }
+
+    public function hasWorkplace()
+    {
+        return (
+            $this->club_name || 
+            $this->city || 
+            $this->address || 
+            $this->incall_type ||
+            $this->outcall_type
+        ) ? true : false;
     }
 
     public function notifications()

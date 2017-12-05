@@ -54,40 +54,40 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },
             // This option will not ignore invisible fields which belong to inactive panels
-            excluded: ':disabled',
+            excluded: [':disabled', ':hidden'],
             fields: {
-                // first_name: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'First name is required'
-                //         },
-                //     }
-                // },
-                // last_name: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'Last name is required'
-                //         },
-                //         regexp: {
-                //             regexp: /^[a-zA-Z\s]+$/,
-                //             message: 'The first name can only consist of alphabetical and space'
-                //         }
-                //     }
-                // },
-                // nickname: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'Nickname is required'
-                //         },
-                //     }
-                // },
-                // sex: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'Sex is required'
-                //         }
-                //     }
-                // },
+                first_name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'First name is required'
+                        },
+                    }
+                },
+                last_name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Last name is required'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z\s]+$/,
+                            message: 'The first name can only consist of alphabetical and space'
+                        }
+                    }
+                },
+                nickname: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Nickname is required'
+                        },
+                    }
+                },
+                sex: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Sex is required'
+                        }
+                    }
+                },
                 age: {
                     validators: {
                         notEmpty: {
@@ -101,42 +101,42 @@ $(document).ready(function() {
                     }
                 },
 
-                // about_me: {
-                //     validators: {
-                //         stringLength: {
-                //             max: 200,
-                //             message: 'The bio must be less than 200 characters'
-                //         }
-                //     }
-                // }
-                // phone: {
-                //     validators: {
-                //         numeric: {
-                //             message: 'This field must be numeric'
-                //         }
-                //     }
-                // }
-                // mobile: {
-                //     validators: {
-                //         numeric: {
-                //             message: 'This field must be numeric'
-                //         }
-                //     }
-                // },
-                // skype_name: {
-                //     validators: {
-                //         notEmpty: {
-                //             message: 'This field is required'
-                //         }
-                //     }
-                // },
-                // website: {
-                //     validators: {
-                //         uri: {
-                //             message: 'The URL is not valid'
-                //         }
-                //     }
-                // },
+                about_me: {
+                    validators: {
+                        stringLength: {
+                            max: 200,
+                            message: 'The bio must be less than 200 characters'
+                        }
+                    }
+                },
+                phone: {
+                    validators: {
+                        numeric: {
+                            message: 'This field must be numeric'
+                        }
+                    }
+                },
+                mobile: {
+                    validators: {
+                        numeric: {
+                            message: 'This field must be numeric'
+                        }
+                    }
+                },
+                skype_name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'This field is required'
+                        }
+                    }
+                },
+                website: {
+                    validators: {
+                        uri: {
+                            message: 'The URL is not valid'
+                        }
+                    }
+                },
                 'ullalla_package[]': {
                     err: '#alertPackageMessage',
                     validators: {

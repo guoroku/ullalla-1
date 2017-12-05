@@ -1,4 +1,14 @@
 <?php
+function getDataAndCutLastCharacter($results, $attribute) {
+	$resultArr = array();
+	if ($results) {
+		foreach ($results as $result) {
+			$resultArr[] = $result->$attribute;
+		}
+	}
+	return implode(', ', array_map('ucfirst', $resultArr));
+}
+
 // upload care store files
 function storeAndGetUploadCareFiles($file, $dbObject = null) {
 	$imageFile = null;
@@ -159,7 +169,7 @@ function getWorkingTime($days, $available_24_7, $timeFrom, $timeFromM, $timeTo, 
 function getBioFields() {
 	return [
 		'age' => 'Age',		
-		'type' => 'Nationality',		
+		'type' => 'Type',		
 		'country_id' => 'Nationality',
 		'eye_color' => 'Eyes',
 		'hair_color' => 'Hair',
@@ -175,14 +185,97 @@ function getBioFields() {
 function parseSingleUserData($fields, $user) {
 	$html = '';
 	foreach ($fields as $key => $field) {
-		if ($user->$key) {
+		$value = $user->$key;
+		if ($value) {
 			$html .= '<tr>
 			<td>' . $field . ':</td>
-			<td>' . $user->$key . '</td>
+			<td>';
+			if ($field == 'Nationality') {
+				$html .= \App\Models\Country::where('id', $value)->value('citizenship');
+			} else {
+				$html .= ucfirst($value);
+			}
+			$html .= '</td>
 			</tr>';
 		}
 	}
 
+	echo $html;
+}
+
+function getContactFields() {
+	return [
+		'email' => 'Email',		
+		'phone' => 'Phone',		
+		'mobile' => 'Mobile Phone',		
+		'website' => 'Website',
+		'contact_options' => ['Available Apps' => 'contact_option_name'],
+		'skype_name' => 'Skype Name',
+		'prefered_contact_option' => 'I Prefer',
+		'no_withheld_numbers' => 'Withheld Numbers',
+	];
+}
+
+function parseSingleContactData($fields, $user) {
+	$html = '';
+	foreach ($fields as $key => $field) {
+		$value = $user->$key;
+		if ($value) {
+			if (is_array($field) && $value->count()) {
+				$keyInsideOfArray = key($field);
+				$html .= '<tr>
+				<td>' . $keyInsideOfArray . ':</td>
+				<td>';
+				$html .= getDataAndCutLastCharacter($value, $field[$keyInsideOfArray]);
+				$html .= '</td></tr>';
+			} else {
+				$html .= '<tr>
+				<td>' . $field . ':</td>
+				<td>';
+				if (array_key_exists($value, getPreferedOptions())) {
+					$html .= getPreferedOptions()[$value];
+				} else {
+					if ($key == 'no_withheld_numbers') {
+						$html .= $value == 0 ? 'Yes' : 'No';
+					} else {
+						$html .= $value;
+					}
+				}
+				$html .= '</td></tr>';
+			}
+		}
+	}
+
+	echo $html;
+}
+
+function getWorkplaceFields() {
+	return [
+		'club_name' => 'Club',		
+		'city' => 'City',		
+		'address' => 'Address',
+		'incall_type' => 'Incall',
+		'outcall_type' => 'Outcall',
+	];
+}
+
+function parseWorkplaceDate($fields, $user) {
+	$html = '';
+	foreach ($fields as $key => $field) {
+		if ($user->$key) {
+			$html .= '<tr>
+			<td>' . $field . ':</td>
+			<td>';
+			$value = $user->$key;
+			$explodedValue = explode('|', $value);
+			if (isset($explodedValue[1])) {
+				$html .= $explodedValue[1];
+			} else {
+				$html .= $value;
+			}
+			$html .= '</td></tr>';
+		}
+	}
 	echo $html;
 }
 

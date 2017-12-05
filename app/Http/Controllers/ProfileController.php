@@ -110,10 +110,9 @@ class ProfileController extends Controller
             $totalAmount += (int) filter_var($monthGirlPackage->package_price, FILTER_SANITIZE_NUMBER_INT);
         }
 
-            // create profile
         $incallType = null;
         $outcallType = null;
-            // get incall type
+
         $incallOption = request('incall_option');
         $outcallOption = request('outcall_option');
         if ($incallOption) {
@@ -123,7 +122,7 @@ class ProfileController extends Controller
                 $incallType = request('incall_define_yourself');
             }
         }
-            // get outcall type
+
         if ($outcallOption) {
             if ($outcallOption != 'define_yourself') {
                 $outcallType = array_search_reverse($outcallOption, getOutcallOptions());
@@ -206,19 +205,19 @@ class ProfileController extends Controller
         }
 
             // stripe
-            // try {
-            //     // create a customer
-            //     $customer = Customer::create([
-            //         'email' => request('stripeEmail'),
-            //         'source' => request('stripeToken'),
-            //     ]);
-            //     $user->stripe_id = $customer->id;
-            //     $user->save();             
-            // } catch (\Exception $e) {
-            //     return response()->json([
-            //         'status' => $e->getMessage()
-            //     ], 422);
-            // }
+            try {
+                // create a customer
+                $customer = Customer::create([
+                    'email' => request('stripeEmail'),
+                    'source' => request('stripeToken'),
+                ]);
+                $user->stripe_id = $customer->id;
+                $user->save();             
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => $e->getMessage()
+                ], 422);
+            }
 
         //     return true;
         // });
@@ -347,14 +346,16 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $services = Service::all();
+        $serviceOptions = ServiceOption::all();
 
-        return view('pages.profile.services', compact('user', 'services'));
+        return view('pages.profile.services', compact('user', 'services', 'serviceOptions'));
     }
 
     public function postServices()
     {
         $user = Auth::user();
         $user->services()->sync(request('services'));
+        $user->service_options()->sync(request('service_options'));
 
         return redirect()->back()->with('success', 'Services successfully updated.');
     }
@@ -370,11 +371,35 @@ class ProfileController extends Controller
     public function postWorkplace()
     {
         $user = Auth::user();
+
+        $incallType = null;
+        $outcallType = null;
+        $incallOption = request('incall_option');
+        $outcallOption = request('outcall_option');
+
+        if ($incallOption) {
+            if ($incallOption != 'define_yourself') {
+                $incallType = array_search_reverse($incallOption, getIncallOptions());
+            } elseif (request('incall_define_yourself')) {
+                $incallType = 'define_yourself' . '|' . request('incall_define_yourself');
+            }
+        }
+
+        if ($outcallOption) {
+            if ($outcallOption != 'define_yourself') {
+                $outcallType = array_search_reverse($outcallOption, getOutcallOptions());
+            } elseif(request('outcall_define_yourself')) {
+                $outcallType = 'define_yourself' . '|' . request('outcall_define_yourself');
+            }
+        }
+
         $user->canton_id = request('canton');
         $user->city = request('city');
         $user->address = request('address');
         $user->zip_code = request('zip_code');
         $user->club_name = request('club_name');
+        $user->incall_type = $incallType;
+        $user->outcall_type = $outcallType;
         $user->save();
 
         return redirect()->back()->with('success', 'Workplace successfully updated.');
