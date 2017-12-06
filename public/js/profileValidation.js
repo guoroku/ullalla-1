@@ -144,6 +144,18 @@ $(document).ready(function() {
                             message: 'Please choose at least one of the default packages'
                         }
                     }
+                },
+                photos: {
+                    excluded: false,
+                    validators: {
+                        callback: {
+                            message: 'You must select at least 4 files',
+                            callback: function(value, validator, $field) {
+                                var numOfFiles = $field.closest('.image-preview-multiple').find('._list ._item').length;
+                                return (numOfFiles != null && numOfFiles >= 4);
+                            }
+                        }
+                    }
                 }
             }
         })

@@ -20,7 +20,7 @@
 						<ul>
 							<li><a href="{{ url('/') }}">Home</a></li>
 							<li class="separator"><i class="fa fa-angle-right"></i></li>
-							<li>profile</li>
+							<li>Profile</li>
 						</ul>
 					</div>
 				</div>
@@ -274,6 +274,33 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZdaqR1wW7f-IealrpiTna-fB
 				alert('Geocode was not successful for the following reason: ' + status);
 			}
 		});
+
+
+	// $(window).on('load', function () {
+
+	// 	var map = new google.maps.Map(document.getElementById('map'), {
+	// 		zoom: 16,
+	// 		center: {lat: -34.397, lng: 150.644}
+	// 	});
+
+	// 	// 22.7206
+
+	// 	var geocoder = new google.maps.Geocoder();
+
+	// 	var address = '';
+
+	// 	geocoder.geocode({'address': address}, function(results, status) {
+		
+	// 			map.setCenter(results[0].geometry.location);
+	// 			console.log(results[0].geometry.location.lat);
+	// 			var marker = new google.maps.Marker({
+	// 				map: map,
+	// 				position: results[0].geometry.location
+	// 			});
+		
+	// 	});
+	// });
+
 	}
 </script>
 <script>

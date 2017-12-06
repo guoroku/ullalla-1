@@ -17,8 +17,8 @@ class CreatePricesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('price_type')->nullable();
-            $table->string('service_duration')->nullable();
-            $table->string('service_price')->nullable();
+            $table->integer('service_duration')->unsigned()->nullable();
+            $table->integer('service_price')->unsigned()->nullable();
             $table->string('service_price_unit')->nullable();
             $table->string('service_price_currency')->nullable();
 

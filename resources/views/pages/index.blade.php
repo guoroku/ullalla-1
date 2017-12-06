@@ -434,7 +434,7 @@
             </div>
         </div>
     </section>
-
+    
     <div class="banner-area-2 home-4">
         <div class="container">
             <div class="row">
@@ -450,6 +450,13 @@
             </div>
         </div>
     </div>
+
+    <div id="map"></div>
+
+{{--     @php
+    $location = file_get_contents('http://freegeoip.net/json/24.135.165.252');
+    dd($location);
+    @endphp --}}
     @stop
 
     @section('perPageScripts')
@@ -472,6 +479,9 @@
         );
     </script>
     @endif
+    <script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZdaqR1wW7f-IealrpiTna-fBPPawZVY4&callback=initMap">
+</script>
     <script>
         $(function () {
             var modal = $('#myModal');
@@ -484,19 +494,35 @@
         });
     </script>
     <script>
-        var x = document.getElementById("demo");
+        var map, infoWindow;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 6
+        });
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                x.innerHTML = "Geolocation is not supported by this browser.";
-            }
-        }
+        infoWindow = new google.maps.InfoWindow;
 
-        function showPosition(position) {
-            x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            infoWindow.open(map);
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
         }
+      }
+
     </script>
     @stop

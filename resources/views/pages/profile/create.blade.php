@@ -752,6 +752,7 @@ function installWidgetPreviewMultiple(widget, list) {
 				});
 			});
 		}
+		$('#profileForm').formValidation('revalidateField', 'photos');
 	});
 }
 

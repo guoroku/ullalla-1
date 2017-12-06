@@ -74,7 +74,7 @@ Route::get('girls', [
 	'uses' => 'GirlController@getIndex'
 ]);
 Route::get('girls/{nickname}', 'GirlController@getGirl');
-
+Route::get('get_price_ranges', 'GirlController@getPriceRanges');
 
 #NOTIFICATION CONTROLLER
 Route::get('@{username}/notifications', 'NotificationController@getIndex');

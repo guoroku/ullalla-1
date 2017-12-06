@@ -35,7 +35,7 @@
 							<div class="layout-title">
 								<h2>Canton</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('canton') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										<?php $num = 1; ?>
@@ -53,11 +53,34 @@
 								</ul>
 							</div>
 						</div>
+
+						<div class="shop-layout">
+							<div class="layout-title">
+								<h2>Price</h2>
+							</div>
+							<div class="layout-list" style="{{ !request('price_from') && !request('price_to') ? 'display: none;' : '' }}">
+								<ul>
+									<li>
+										<label for="amount">Price range:</label>
+										<div class="price-inputs">
+											<input type="hidden" name="price_from" value="{{ old('price_from') }}">
+											<input type="hidden" name="price_to" value="{{ old('price_to') }}">
+										</div>
+										<div id="price-ranger" style="margin: 10px;"></div>
+										<div class="slider-value-wrapper">
+											<span class="price-value-from">{{ old('price_to') ? old('price_from') : 0 }}</span>
+											<span> - </span>
+											<span class="price-value-to">{{ old('price_to') ? old('price_to') : $maxPrice }}</span>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
 						<div class="shop-layout services-layout">
 							<div class="layout-title">
 								<h2>Service</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('services') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										@foreach($services as $service)
@@ -78,7 +101,7 @@
 							<div class="layout-title">
 								<h2>Type</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('type') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										<?php $num = 1; ?>
@@ -100,7 +123,7 @@
 							<div class="layout-title">
 								<h2>Hair Color</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('hair_color') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										@foreach(getHairColors() as $hairColor)
@@ -120,7 +143,7 @@
 							<div class="layout-title">
 								<h2>Breast Size</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('breast_size') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										@foreach(getBreastSizes() as $breastSize)
@@ -140,7 +163,7 @@
 							<div class="layout-title">
 								<h2>Age</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('age') ? 'display: none;' : '' }}">
 								<ul>
 									<?php $num = 1; ?>
 									@foreach (getFilterYears() as $startAge => $endAge)
@@ -161,9 +184,9 @@
 						</div>
 						<div class="shop-layout">
 							<div class="layout-title">
-								<h2>Breast Size</h2>
+								<h2>Escorting</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('price_type') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										@foreach(getPriceTypes() as $priceType)
@@ -203,7 +226,7 @@
 							<div class="layout-title">
 								<h2>Languages</h2>
 							</div>
-							<div class="layout-list">
+							<div class="layout-list" style="{{ !request('spoken_languages') ? 'display: none;' : '' }}">
 								<ul>
 									<li>
 										@foreach($spokenLanguages as $spokenLanguage)
@@ -368,23 +391,70 @@
 @stop
 
 @section('perPageScripts')
-{{-- <script>
-	function updateQueryStringParameter(uri, key, value) {
-		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-		if (uri.match(re)) {
-			return uri.replace(re, '$1' + key + "=" + value + '$2');
-		}
-		else {
-			return uri + separator + key + "=" + value;
-		}
-	}
 
+<script>
+	$( function() {
+		var slider = $( "#price-ranger" );
+		var initialPriceFrom = '{{ old('price_from') }}';
+		var initialPriceTo = '{{ old('price_to') }}' != '' ? '{{ old('price_to') }}' : '{{ $maxPrice }}';
+		slider.slider({
+			range: true,
+			min: 0,
+			max: '{{ $maxPrice }}',
+			values: [initialPriceFrom, initialPriceTo],
+			slide: function( event, ui ) {
+				$('.price-value-from').text(ui.values[0]);
+				$('.price-value-to').text(ui.values[1]);
+			},
+			change: function( event, ui ) {
+
+				var priceInputsWrapper = $('.price-inputs');
+				var $priceFrom = priceInputsWrapper.find('input:first-child').val(ui.values[0]);
+				var $priceTo = priceInputsWrapper.find('input:last-child').val(ui.values[1]);
+
+				var $url = getUrl('/get_price_ranges');
+
+				var requestQueryString = '{{ is_array(request()->query()) ? json_encode(request()->query()) : "{}" }}';
+
+				var requestQueryClearedJSON = requestQueryString.replace(/&quot;/gi,"\"")
+				.replace(/\[/gi,"")
+				.replace(/\]/gi,"");
+
+				var requestQueryClearedJSON = JSON.stringify({});
+				var requestQueryObj = JSON.parse(requestQueryClearedJSON);
+
+				delete requestQueryObj.price_to;
+				delete requestQueryObj.price_from;
+
+				var requestData = Object.assign({
+					price_from: $priceFrom.val(), 
+					price_to: $priceTo.val()
+				}, requestQueryObj);
+
+				$.ajax({
+					data: requestData,
+					url: $url,
+					dataType: 'json',
+					method: 'get',
+					success: function (data) {
+						// console.log(data.url);
+						window.location.href = data.url;
+					},
+					error: function (data) {
+						// console.log('error');
+					}
+				});
+			}
+		});
+	} );
+</script>
+<!-- Filters -->
+<script>
 	$(function () {
-		$('select').on('change', function () {
-
+		$('.layout-title').on('click', function() {
+			var that = $(this);
+			that.closest('.shop-layout').find('.layout-list').toggle('fast');
 		});
 	});
-
-</script> --}}
+</script>
 @stop

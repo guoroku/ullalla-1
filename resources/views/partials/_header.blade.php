@@ -35,7 +35,8 @@
     	// messages for widget
     	errors: {
     		'fileMaximumSize': 'File is too large',
-    		'fileType': 'This type of files is not allowed.'
+            'fileType': 'This type of files is not allowed.',
+    		'minDimensions': 'Minimum dimension of a photo should be 490x560'
     	},
     	// messages for dialog’s error page
     	dialog: {

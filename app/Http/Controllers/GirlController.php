@@ -11,15 +11,11 @@ use App\Models\SpokenLanguage;
 
 class GirlController extends Controller
 {
-	public function __construct()
-	{
-
-	}
-
 	public function getIndex(Request $request)
 	{
 		$services = Service::with('users')->get();
 		$spokenLanguages = SpokenLanguage::with('users')->get();
+		$maxPrice = \DB::table('prices')->max('service_price');
 		$cantons = Canton::with('users')->get();
 
 		$users = DB::table('users')->leftJoin('prices', 'users.id', '=', 'prices.user_id');
@@ -66,25 +62,50 @@ class GirlController extends Controller
 			}
 		}
 
+		if ($request->has('price_from') && $request->has('price_to')) {
+			$inputPriceFrom = $request->price_from;
+			$inputPriceTo = $request->price_to;
+			if ($inputPriceFrom == 0 && $inputPriceTo == $maxPrice) {
+				$users = $users;
+			} else {
+				$users->whereBetween('prices.service_price', [$inputPriceFrom, $inputPriceTo]);
+			}
+		}
+		
+		$users = $users->where('users.approved', '=', '1')
+		->where('users.is_active_d_package', '=', '1')
+		->select('users.*', 'prices.*')
+		->groupBy('users.username');
+
 		$orderBy = $request->order_by ? $request->order_by : null;
 		$show = $request->show ? $request->show : null;
 
-		$users = $users->where('users.approved', '=', '1')
-			->where('users.is_active_d_package', '=', '1')
-			->select('users.*')
-			->groupBy('users.username');
 		$users = isset($orderBy) ? $users->orderBy(getBeforeLastChar($orderBy, '_'), getAfterLastChar($orderBy, '_')) : $users;
 		$users = isset($show) ? $users->paginate($show) : $users->paginate(9);
 
 		$request->flash();
 
-		return view('pages.girls.index', compact('services', 'users', 'cantons', 'spokenLanguages', 'pricesTypes'));
+		return view('pages.girls.index', compact('services', 'users', 'cantons', 'spokenLanguages', 'pricesTypes', 'maxPrice'));
 	}
 
 	public function getGirl($nickname)
 	{
 		$user = User::with('services', 'country', 'prices')->nickname($nickname)->approved()->first();
 
+		if (!$user) {
+			redirect()->url('/');
+		}
+
 		return view('pages.girls.single', compact('user'));
+	}
+
+	public function getPriceRanges(Request $request)
+	{
+		if ($request->ajax()) {
+			$url = urldecode(route('girls', $request->query(), false));
+			return response()->json([
+				'url' => $url
+			]);
+		}
 	}
 }
