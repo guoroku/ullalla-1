@@ -20,6 +20,30 @@ class GirlController extends Controller
 
 		$users = DB::table('users')->leftJoin('prices', 'users.id', '=', 'prices.user_id');
 
+		if ($request->has('radius')) {
+			$radius = (int)request('radius');
+			$location = file_get_contents('http://freegeoip.net/json/24.135.165.252');			
+			$location = json_decode($location, true);
+			// dd($colation);
+			$lat = 43.148018;
+			$lng = 22.589060;
+
+
+			$haversine = "(6371 * acos(cos(radians('. $lat .')) 
+                    * cos(radians(users.lat)) 
+                    * cos(radians(users.lng) 
+                    - radians('. $lng .')) 
+                    + sin(radians('. $lat .')) 
+                    * sin(radians(users.lat))))";
+
+			// $users = $users->select()
+   //     			->whereRaw("{$haversine} < ?", [$radius]);
+			// $users = $users->nearLatLng($lat, $lng, $radius)->get();
+
+		}
+
+		// dd($users->get());
+
 		if ($request->has('canton')) {
 			$users = $users->leftJoin('cantons', 'users.canton_id', '=', 'cantons.id')
 			->whereIn('cantons.id', $request->canton);
@@ -27,8 +51,7 @@ class GirlController extends Controller
 
 		if ($request->has('services')) {
 			$users = $users->leftJoin('user_service', 'users.id', '=', 'user_service.user_id')
-			->whereIn('user_service.service_id', $request->services)
-			->groupBy('users.username');
+			->whereIn('user_service.service_id', $request->services);
 		}
 
 		if ($request->has('languages')) {
@@ -74,11 +97,12 @@ class GirlController extends Controller
 		
 		$users = $users->where('users.approved', '=', '1')
 		->where('users.is_active_d_package', '=', '1')
-		->select('users.*', 'prices.*')
+		->select('users.*')
 		->groupBy('users.username');
 
 		$orderBy = $request->order_by ? $request->order_by : null;
 		$show = $request->show ? $request->show : null;
+		$radius = $request->radius ? $request->radius : null;
 
 		$users = isset($orderBy) ? $users->orderBy(getBeforeLastChar($orderBy, '_'), getAfterLastChar($orderBy, '_')) : $users;
 		$users = isset($show) ? $users->paginate($show) : $users->paginate(9);
@@ -100,6 +124,16 @@ class GirlController extends Controller
 	}
 
 	public function getPriceRanges(Request $request)
+	{
+		if ($request->ajax()) {
+			$url = urldecode(route('girls', $request->query(), false));
+			return response()->json([
+				'url' => $url
+			]);
+		}
+	}
+
+	public function getRadius(Request $request)
 	{
 		if ($request->ajax()) {
 			$url = urldecode(route('girls', $request->query(), false));

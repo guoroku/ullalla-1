@@ -30,8 +30,6 @@ class HomeController extends Controller
 			->whereBetween('users.package2_expiry_date', [Carbon::now(), $expiryDatePackage])->first();
 		}
 
-		// dd($defaultPackageExpired);
-
-		return view('pages.index', compact('defaultPackageExpired', 'gotmPackageExpired'));
+		return view('pages.home', compact('defaultPackageExpired', 'gotmPackageExpired'));
 	}
 }

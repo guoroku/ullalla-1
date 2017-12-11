@@ -275,7 +275,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->back()->with('success', 'Bio successfully saved.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getAbout()
@@ -291,7 +291,7 @@ class ProfileController extends Controller
         $user->about_me = request('about_me');
         $user->save();
 
-        return redirect()->back()->with('success', 'Data successfully saved.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getGallery()
@@ -308,7 +308,7 @@ class ProfileController extends Controller
         $user->videos = storeAndGetUploadCareFiles(request('video'));
         $user->save();
         
-        return redirect()->back()->with('success', 'Gallery successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getContact()
@@ -325,7 +325,7 @@ class ProfileController extends Controller
 
         $this->validate($request, [
             'skype_name' => 'required_with:contact_options.3,on'
-        ], ['required_with' => 'Skype name is required']);
+        ], ['required_with' => __('messages.skype_required')]);
 
         $user->phone = request('phone');
         $user->mobile = request('mobile');
@@ -339,7 +339,7 @@ class ProfileController extends Controller
 
         $request->flash();
 
-        return redirect()->back()->with('success', 'Contact successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getServices()
@@ -357,7 +357,7 @@ class ProfileController extends Controller
         $user->services()->sync(request('services'));
         $user->service_options()->sync(request('service_options'));
 
-        return redirect()->back()->with('success', 'Services successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getWorkplace()
@@ -371,6 +371,21 @@ class ProfileController extends Controller
     public function postWorkplace()
     {
         $user = Auth::user();
+        $address = request('address');
+        $city = request('city');
+        $lat = null;
+        $lng = null;
+        $fullAddress = $address && $city ? $address . ', ' . $city : null;
+
+        if ($fullAddress) {
+            $geo = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($fullAddress).'&sensor=false');
+            $geo = json_decode($geo, true); 
+
+            if (isset($geo['status']) && ($geo['status'] == 'OK')) {
+                $lat = $geo['results'][0]['geometry']['location']['lat'];
+                $lng = $geo['results'][0]['geometry']['location']['lng'];
+            }
+        }
 
         $incallType = null;
         $outcallType = null;
@@ -398,11 +413,13 @@ class ProfileController extends Controller
         $user->address = request('address');
         $user->zip_code = request('zip_code');
         $user->club_name = request('club_name');
+        $user->lat = $lat;
+        $user->lng = $lng;
         $user->incall_type = $incallType;
         $user->outcall_type = $outcallType;
         $user->save();
 
-        return redirect()->back()->with('success', 'Workplace successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getWorkingTimes()
@@ -429,7 +446,7 @@ class ProfileController extends Controller
         $user->working_time = $workingTime;
         $user->save();
 
-        return redirect()->back()->with('success', 'Work time successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getLanguages()
@@ -457,7 +474,7 @@ class ProfileController extends Controller
         // sync data and save
         $user->spoken_languages()->sync($syncData);
 
-        return redirect()->back()->with('success', 'Languages successfully updated.');
+        return redirect()->back()->with('success', __('messages.success_changes_saved'));
     }
 
     public function getPrices()
@@ -648,7 +665,7 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        Session::flash('success', 'Packages successfully updated.');
+        Session::flash('success', __('messages.success_changes_saved'));
     }
 
     public function postNewPrice(Request $request)
@@ -715,7 +732,7 @@ class ProfileController extends Controller
             }
         } else {
             if ($request->ajax()) {
-                return response('Price doesn\'t exist.', 500)
+                return response(__('messages.error_somethings_wrong'), 500)
                 ->header('Content-Type', 'json/application');
             } else {
                 return redirect()->action('ProfileController@getCreate', ['@username' => $user->username]);

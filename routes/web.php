@@ -1,4 +1,13 @@
 <?php
+# LANGUAGE CONTROLLER
+Route::get('change_language/{language}', 'LanguageController@changeLanguage');
+
+# Password Reset Controller
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::get('password/reset/{token?}', 'Auth\ResetPasswordController@showResetForm');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
 # HOME CONTROLLER
 Route::get('/', 'HomeController@getIndex');
 # AUTH CONTROLLER
@@ -75,6 +84,7 @@ Route::get('girls', [
 ]);
 Route::get('girls/{nickname}', 'GirlController@getGirl');
 Route::get('get_price_ranges', 'GirlController@getPriceRanges');
+Route::get('get_radius', 'GirlController@getRadius');
 
 #NOTIFICATION CONTROLLER
 Route::get('@{username}/notifications', 'NotificationController@getIndex');

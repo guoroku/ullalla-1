@@ -111,6 +111,15 @@ function getFilterYears() {
 	];
 }
 
+function getLanguages() {
+	return [
+		'de' => 'German', 
+		'fr' => 'French', 
+		'it' => 'Italian',
+		'en' => 'English',
+	];
+}
+
 function makeStringFromFilterYears($startAge, $endAge) {
 	return $startAge . '-' . $endAge;
 }
@@ -452,5 +461,6 @@ function array_search_reverse($key, $array){
 	}
 	return null;
 }
+
 
 ?>

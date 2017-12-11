@@ -29,7 +29,8 @@ class RedirectIfPackageExpired
         if (Carbon::now() >= $package1ExpiryDate) {
             $user->is_active_d_package = 0;
             $user->save();
-            return redirect()->action('ProfileController@getPackages', ['username' => $user->username])->with('expired_package_info', 'Please upgrade your profile');
+            return redirect()->action('ProfileController@getPackages', ['username' => $user->username])
+                            ->with('expired_package_info', 'Please upgrade your account.');
         }
 
         return $next($request);

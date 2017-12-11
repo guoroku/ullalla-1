@@ -7,34 +7,6 @@
 @stop
 
 <section class="slider-area home-4">
-
-    @if ((Session::has('defaultGirlPackageExpired') && $defaultPackageExpired) 
-    || (Session::has('gotmPackageExpired') && $gotmPackageExpired))
-    <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Expiry Notifications</h4>
-                </div>
-                <div class="modal-body">
-                    @if($defaultPackageExpired)
-                    <p>{{ $defaultPackageExpired->note }}</p>
-                    @endif
-                    @if($gotmPackageExpired)
-                    <p>{{ $gotmPackageExpired->note }}</p>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -434,7 +406,7 @@
             </div>
         </div>
     </section>
-    
+
     <div class="banner-area-2 home-4">
         <div class="container">
             <div class="row">
@@ -450,79 +422,103 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div id="map"></div>
+<div id="map"></div>
 
-{{--     @php
-    $location = file_get_contents('http://freegeoip.net/json/24.135.165.252');
-    dd($location);
-    @endphp --}}
-    @stop
+@stop
 
-    @section('perPageScripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.6/sweetalert2.all.min.js"></script>
-    @if(Session::has('not_approved'))
-    <script>
-        swal(
-            'Oops...',
-            '{{ Session::get('not_approved') }}',
-            'error'
-        );
-    </script>
-    @endif
-    @if(Session::has('success'))
-    <script>
-        swal(
-            'Good job!',
-            '{{ Session::get('success') }}',
-            'success'
-        );
-    </script>
-    @endif
-    <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZdaqR1wW7f-IealrpiTna-fBPPawZVY4&callback=initMap">
+@section('perPageScripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.6/sweetalert2.all.min.js"></script>
+
+@if(Session::has('not_approved'))
+<script>
+    swal(
+        'Oops...',
+        '{{ Session::get('not_approved') }}',
+        'error'
+    );
 </script>
-    <script>
-        $(function () {
-            var modal = $('#myModal');
-            if (modal[0]) {
-                console.log('sadsa');
-                $(window).on('load', function () {
-                    modal.modal('show');
-                });
-            }
-        });
+@endif
+
+@if(Session::has('success'))
+<script>
+    swal(
+        'Good job!',
+        '{{ Session::get('success') }}',
+        'success'
+        );
     </script>
-    <script>
-        var map, infoWindow;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 6
-        });
+@endif
 
-        infoWindow = new google.maps.InfoWindow;
-
-        // Try HTML5 geolocation.
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-
-            infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
-            infoWindow.open(map);
-            map.setCenter(pos);
-          }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          // Browser doesn't support Geolocation
-          handleLocationError(false, infoWindow, map.getCenter());
+@if((Session::has('defaultGirlPackageExpired') && $defaultPackageExpired) && Session::has('gotm_expired_package_info'))
+<script>
+    swal.queue([{
+        title: 'Package Expiry',
+        confirmButtonText: 'Close',
+        html: '{{ $defaultPackageExpired->note }}.' + ' <p>Click <a href="{{ url('@' . Auth::user()->username . '/packages') }}">HERE</a> to upgrade your account</p>',
+        type: 'warning',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return swal({
+                title: 'Package Expired',
+                html: '{!! Session::get('gotm_expired_package_info') !!}',
+                type: 'error'
+            })
         }
-      }
+    }]);
+</script>
 
-    </script>
-    @stop
+@elseif(Session::has('gotm_expired_package_info'))
+<script>
+    swal(
+        'Oops...',
+        '{!! Session::get('gotm_expired_package_info') !!}',
+        'warning'
+    );
+</script>
+
+@elseif((Session::has('defaultGirlPackageExpired') && $defaultPackageExpired) && (Session::has('gotmPackageExpired') && $gotmPackageExpired))
+<script>
+    swal.queue([{
+        title: 'Package Expiry',
+        confirmButtonText: 'Close',
+        html: '{{ $defaultPackageExpired->note }}.' + ' <p>Click <a href="{{ url('@' . Auth::user()->username . '/packages') }}">HERE</a> to upgrade your account</p>',
+        type: 'warning',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return swal({
+                title: 'Package Expiry',
+                html: '{{ $gotmPackageExpired->note }}.' + '<p>Click <a href="{{ url('@' . Auth::user()->username . '/packages') }}">HERE</a> to upgrade your account</a>',
+                type: 'warning'
+            })
+        }
+    }]);
+</script>
+
+@elseif(Session::has('defaultGirlPackageExpired') && $defaultPackageExpired)
+<script>
+    swal({
+        title: 'Package Expiry',
+        confirmButtonText: 'Close',
+        html: '{{ $defaultPackageExpired->note }}.' + ' <p>Click <a href="{{ url('@' . Auth::user()->username . '/packages') }}">HERE</a> to upgrade your account</p>',
+        type: 'warning',
+    });
+</script>
+
+@elseif(Session::has('gotmPackageExpired') && $gotmPackageExpired)
+<script>
+    swal({
+        title: 'Package Expiry',
+        confirmButtonText: 'Close',
+        html: '{{ $gotmPackageExpired->note }}.' + ' <p>Click <a href="{{ url('@' . Auth::user()->username . '/packages') }}">HERE</a> to upgrade your account</p>',
+        type: 'warning',
+    });
+</script>
+@endif
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZdaqR1wW7f-IealrpiTna-fBPPawZVY4&callback=initMap">
+</script>
+
+@stop

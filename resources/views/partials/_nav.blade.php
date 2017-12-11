@@ -26,13 +26,21 @@
                                     <li><a href="{{ url('signout') }}">Sign Out</a></li>
                                     @endif
                                     <li class="dropdown">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="flag-icon flag-icon-en{{-- {{ tran() }} --}}"></span>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                            @php 
+                                            $currentLanguage = Session::has('locale') ? asset('flags/4x3/' . Session::get('locale') . '.svg') : asset('flags/4x3/de.svg');
+                                            @endphp
+                                            <img src="{{ $currentLanguage }}" alt="" height="10" width="20">
                                             <span class="caret"></span></a>
                                             <ul class="dropdown-menu">
-                                                <li><a href="/de"><span class="flag-icon flag-icon-de"></span> De</a></li>
-                                                <li><a href="/en"><span class="flag-icon flag-icon-en"></span> En</a></li>
-                                                <li><a href="/it"><span class="flag-icon flag-icon-it"></span> It</a></li>
-                                                <li><a href="/fr"><span class="flag-icon flag-icon-fr"></span> Fr</a></li>
+                                                @foreach(getLanguages() as $key => $language)
+                                                <li>
+                                                    <a href="{{ url('change_language/' . $key) }}">
+                                                        <img src="{{ asset('flags/4x3/' . $key . '.svg') }}" alt="" height="10" width="20">
+                                                        <span>{{ __('global.' . strtolower($language)) }}</span>
+                                                    </a>
+                                                </li>
+                                                @endforeach
                                             </ul>
                                         </li>
                                     </ul>

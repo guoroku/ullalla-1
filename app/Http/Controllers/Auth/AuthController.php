@@ -53,7 +53,7 @@ class AuthController extends Controller
         //send an email with the activation token used from user_activations table
 		Mail::to($user->email)->send(new ActivationMail($userActivation));
 
-		Session::flash('success', 'Please check your email for an activation link.');
+		Session::flash('success', __('messages.success_check_activation_link'));
 
 		return redirect()->action('Auth\AuthController@getSignin');
 	}
@@ -69,7 +69,7 @@ class AuthController extends Controller
 			$user = Auth::user();
 			if ($user->activated == '0') {
 				Auth::logout();
-				return redirect()->back()->with('error', 'Please activate your account');
+				return redirect()->back()->with('error', __('messages.error_activate_account'));
 			}
 
 			if ($user->isAdmin()) {
@@ -90,20 +90,28 @@ class AuthController extends Controller
 				if (Carbon::now() >= $package2ExpiryDate) {
 					$user->is_active_gotm_package = 0;
 					$user->save();
+					if (Carbon::now() < $package1ExpiryDate) {
+						$url = url('@' . $user->username . '/packages');
+						Session::flash('gotm_expired_package_info', 
+							__('messages.error_gotm_package_expired', ['url' => $url]));
+					}
 				}
 				if (Carbon::now() >= $package1ExpiryDate) {
 					$user->is_active_d_package = 0;
 					$user->save();
+					return redirect()->action('ProfileController@getPackages', ['username' => $user->username])
+					->with('expired_package_info', __('messages.error_default_package_expired'));
 				}
 
 				// package expiry notifications
 				if ($package1ExpiryDate < $expiryDateDefaultPackage) {
 					event(new PackageExpired($user));
-					Session::flash('defaultGirlPackageExpired', 'Default package expired');					
+					Session::flash('defaultGirlPackageExpired', __('messages.default_package_about_to_expire'));					
 				}
+
 				if ($package2ExpiryDate < $expiryDateGirlOfTheMonthPackage) {
 					event(new MonthOfTheGirlPackageExpired($user));
-					Session::flash('gotmPackageExpired', 'Girl of the month package expired');
+					Session::flash('gotmPackageExpired', __('messages.gotm_package_about_to_expire'));
 				}
 
 				// $diff=date_diff(Carbon::now(), date_create($user->package1_expiry_date));
@@ -114,7 +122,7 @@ class AuthController extends Controller
 			}
 		}
 
-		return redirect()->back()->with('error', 'Sorry, but we coudn\'t verify your credentials. Please, try again.');
+		return redirect()->back()->with('error', __('messages.wrong_credentials'));
 	}
 
 	public function getSignout() {
@@ -131,17 +139,18 @@ class AuthController extends Controller
 			$user = User::find($check->user_id);
 
 			if ($user->activated == '1') {
-				return redirect('signin')->with('error', 'Your account is already activated.');
+				return redirect('signin')->with('error', __('messages.account_already_activated'));
 			}
 
 			$user = User::find($user->id);
 			$user->activated = '1';
 			$user->save();
 
-			redirect()->action('Auth\AuthController@getSignin')->with('success', 'Account successfully activated. You may now sign in.');
+			redirect()->action('Auth\AuthController@getSignin')->with('success', 
+				('messages.account_activated'));
 
 		}
 
-		return redirect()->action('Auth\AuthController@getSignin')->with('error', 'Something went wrong, please try again.');
+		return redirect()->action('Auth\AuthController@getSignin')->with('error', __('messages.error_somethings_wrong'));
 	}
 }

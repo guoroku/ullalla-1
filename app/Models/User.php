@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use DB;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -29,6 +31,11 @@ class User extends Authenticatable
     ];
 
     protected $dates = ['package1_expiry_date', 'package2_expiry_date'];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
     public function user_activation()
     {
@@ -170,5 +177,58 @@ class User extends Authenticatable
     {
         return Carbon::parse($date);
     }
+
+    public function scopeIsWithinMaxDistance($query, $location, $radius = 1) {
+
+        $haversine = "(6371 * acos(cos(radians($location->lat)) 
+                    * cos(radians(users.lat)) 
+                    * cos(radians(users.lng) 
+        - radians($location->lng)) 
+        + sin(radians($location->lat)) 
+                    * sin(radians(users.lat))))";
+        return $query->select()
+        ->selectRaw("{$haversine} AS distance")
+        ->whereRaw("{$haversine} < ?", [$radius]);
+    }
+
+
+    public function scopeNearLatLng($query, $lat, $lng, $radius = 10)
+    {
+        $distanceUnit = 111.045;
+
+        if (!(is_numeric($lat) && $lat >= -90 && $lat <= 90)) {
+            throw new Exception("Latitude must be between -90 and 90 degrees.");
+        }
+
+        if (!(is_numeric($lng) && $lng >= -180 && $lng <= 180)) {
+            throw new Exception("Longitude must be between -180 and 180 degrees.");
+        }
+
+        $haversine = sprintf('*, (%f * DEGREES(ACOS(COS(RADIANS(%f)) * COS(RADIANS(lat)) * COS(RADIANS(%f - lng)) + SIN(RADIANS(%f)) * SIN(RADIANS(lat))))) AS distance',
+            $distanceUnit,
+            $lat,
+            $lng,
+            $lat
+        );
+
+        $subselect = clone $query;
+        $subselect
+        ->selectRaw(DB::raw($haversine));
+
+        $latDistance      = $radius / $distanceUnit;
+        $latNorthBoundary = $lat - $latDistance;
+        $latSouthBoundary = $lat + $latDistance;
+        $subselect->whereRaw(sprintf("lat BETWEEN %f AND %f", $latNorthBoundary, $latSouthBoundary));
+
+        $lngDistance     = $radius / ($distanceUnit * cos(deg2rad($lat)));
+        $lngEastBoundary = $lng - $lngDistance;
+        $lngWestBoundary = $lng + $lngDistance;
+        $subselect->whereRaw(sprintf("lng BETWEEN %f AND %f", $lngEastBoundary, $lngWestBoundary));
+
+        $query
+        ->from(DB::raw('(' . $subselect->toSql() . ') as d'))
+        ->where('distance', '<=', $radius);
+    }
+
 
 }

@@ -56,6 +56,8 @@ class CreateUsersTable extends Migration
             $table->string('city')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('address')->nullable();
+            $table->decimal('lat', 9, 6)->nullable();
+            $table->decimal('lng', 9, 6)->nullable();
             $table->string('club_name')->nullable();
             $table->string('incall_type')->nullable();
             $table->string('outcall_type')->nullable();

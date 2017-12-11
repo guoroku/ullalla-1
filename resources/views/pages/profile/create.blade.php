@@ -537,12 +537,12 @@
 								@foreach($spokenLanguages->take(7) as $language)
 								<tr>
 									<td>
-										<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
+										<img src="{{ asset('flags/4x3/' . $language->spoken_language_code . '.svg') }}" alt="" height="20" width="30">
 										{{ $language->spoken_language_name }}
 									</td>
 									<td>
 										<div class="slider"></div>
-										<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->id }}]" value="">
+										<input type="hidden" class="spoken-language-input" name="spoken_language[{{ $language->spoken_language_code }}]" value="">
 									</td>
 								</tr>
 								@endforeach
@@ -551,12 +551,12 @@
 								@foreach($spokenLanguages->splice(7) as $language)
 								<tr>
 									<td>
-										<img src="{{ asset('flags/4x3/' . $language->id . '.svg') }}" alt="" height="20" width="30">
+										<img src="{{ asset('flags/4x3/' . $language->spoken_language_code . '.svg') }}" alt="" height="20" width="30">
 										{{ $language->spoken_language_name }}
 									</td>
 									<td>
 										<div class="slider"></div>
-										<input type="hidden" name="spoken_language[{{ $language->id }}]" value="0">
+										<input type="hidden" name="spoken_language[{{ $language->spoken_language_code }}]" value="0">
 									</td>
 								</tr>
 								@endforeach

@@ -236,4 +236,15 @@
 		e.preventDefault();	
 	});
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.6/sweetalert2.all.min.js"></script>
+@if(Session::has('expired_package_info'))
+<script>
+	swal(
+		'Oops...',
+		'{{ Session::get('expired_package_info') }}',
+		'error'
+	);
+</script>
+@endif
 @stop
