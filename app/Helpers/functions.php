@@ -144,7 +144,7 @@ function getDaysOfTheWeek() {
 	return ['Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 }
 
-function getWorkingTime($days, $available_24_7, $timeFrom, $timeFromM, $timeTo, $timeToM, $showAsNightEscort, $nightEscorts) {
+function getWorkingTime($days, $available_24_7, $timeFrom, $timeFromM, $timeTo, $timeToM, $showAsNightEscort = null, $nightEscorts = null) {
 	$workingTime = null;
     // girl availability and working hours
 	if ($available_24_7) {
